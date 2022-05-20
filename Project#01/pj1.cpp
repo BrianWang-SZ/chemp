@@ -8,6 +8,7 @@
 #include "Eigen/Dense"
 #include "Eigen/Eigenvalues"
 #include "Eigen/Core"
+#include "molecule.h"
 
 #define MAXLINE 200
 // float comparison precision
