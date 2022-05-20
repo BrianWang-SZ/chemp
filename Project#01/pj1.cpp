@@ -5,10 +5,7 @@
 #include <iostream>
 #include <string.h>
 #include "masses.h"
-#include "Eigen/Dense"
-#include "Eigen/Eigenvalues"
-#include "Eigen/Core"
-#include "molecule.h"
+#include "molecule.hpp"
 
 #define MAXLINE 200
 // float comparison precision
@@ -24,8 +21,6 @@
 #define C 299792458
 // planck's constant = PLANCK J/Hz
 #define PLANCK 6.62607015e-34
-
-typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> Matrix;
 
 Molecule::Molecule(const char* path){
     coord(path);
