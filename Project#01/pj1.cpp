@@ -22,7 +22,7 @@
 #define AMU 1.66053906660e-27
 // speed of light = C m/s
 #define C 299792458
-// planck's constant = PLANK J/Hz
+// planck's constant = PLANCK J/Hz
 #define PLANCK 6.62607015e-34
 
 typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> Matrix;
