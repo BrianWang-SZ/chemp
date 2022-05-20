@@ -5,6 +5,9 @@
 #include <iostream>
 #include <string.h>
 #include "masses.h"
+#include "Eigen/Dense"
+#include "Eigen/Eigenvalues"
+#include "Eigen/Core"
 #include "molecule.hpp"
 
 #define MAXLINE 200
