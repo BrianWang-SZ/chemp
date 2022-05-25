@@ -15,6 +15,7 @@ public:
     Atom *atoms;
     
     Molecule(const char *, const char *);
+    ~Molecule();
     void coord(const char *);
     double ** hessian(const char *);
     void weight(double **);
