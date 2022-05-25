@@ -29,6 +29,10 @@ Molecule::Molecule(const char *geom, const char *hess){
     cleanup(hes);
 }
 
+Molecule::~Molecule(){
+    delete[] atoms;
+}
+
 void Molecule::coord(const char *path){
 
     // open input file
