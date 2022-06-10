@@ -11,15 +11,31 @@
 #include "Eigen/Core"
 #include "molecule.hpp"
 #include "masses.h"
+#include "assert.h"
 
 #define MAXORB 100
-#define MAXITER 1000
+#define MAXITER 100
 #define MAXERR 8
 #define DELTA_1 1e-12
 #define DELTA_2 1e-11
 
 #define INDEX(i, j) ((i>j) ? (((i)*((i)+1)/2)+(j)) : (((j)*((j)+1)/2)+(i)))
 #define here printf("here");
+
+Molecule::~Molecule(){
+    delete[] atoms;
+    delete[] eri;
+    delete[] ioff;
+
+    free2dvec(s, norb);
+    free2dvec(v, norb);
+    free2dvec(t, norb);
+
+    free2dvec(ham, norb);
+    free2dvec(mux, norb);
+    free2dvec(muy, norb);
+    free2dvec(muz, norb);
+}
 
 // lookup array
 
@@ -106,7 +122,7 @@ void Molecule::read_two_electron(const char *dir){
     int i = norb - 1, j = norb - 1, 
         k = norb - 1, l = norb - 1;
 
-    double val;
+    double val = 0.0;
 
     int ij = INDEX(i, j);
     int kl = INDEX(k, l);
@@ -185,11 +201,10 @@ Molecule::Molecule(const char *dir){
     hamiltonian();
     read_two_electron(dir);
     read_dipole(dir);
-    compute_HF();
+    compute();
 }
 
 int main (int argc, char **argv){
-    setbuf(stdout, NULL);
     const char *s = "./input/ch4/STO-3G";
     Molecule m = Molecule(s);
 }
@@ -244,9 +259,28 @@ int Molecule::calc_norb(const char* path){
     return -1;
 }
 
-void Molecule::compute_HF(){
+void Molecule::compute(){
+    Matrix isqrt_S = Matrix::Zero(norb, norb);
+    Matrix C = Matrix::Zero(norb, norb);
+    Matrix D = Matrix::Zero(norb, norb);
+    Matrix F = Matrix::Zero(norb, norb);
 
-    Matrix S(norb, norb);
+    initialize(0, isqrt_S, C, D, F);
+    double E_scf = compute_hf(isqrt_S, C, D, F);
+    double E_mp2 = compute_mp2(C, F, isqrt_S);
+    printf("Escf = %20.12f\nEmp2 = %20.12f\nEtot = %20.12f\n", E_scf + enuc, 
+                                                             E_mp2, E_scf + enuc + E_mp2);
+    double E_cc = 0.0;
+    
+    if (( E_cc = compute_ccsd(C, F, isqrt_S)) != 0.0){
+        printf("Etot = %21.12f\n", E_scf + E_cc + enuc);
+    }
+}
+
+void Molecule::initialize(int toprint, Matrix &isqrt_S, Matrix &C, Matrix &D, Matrix &F){
+
+    // initialize S^(-1/2) matrix
+    Matrix S = Matrix::Zero(norb, norb);
 
     for (int i = 0; i < norb; i++){
         for (int j = 0; j < norb; j++){
@@ -262,37 +296,40 @@ void Molecule::compute_HF(){
 
     Matrix A = evals_S.asDiagonal();
 
-    Matrix isqrt_A = A.cwiseSqrt().inverse();
+    Matrix isqrt_A = A.inverse().cwiseSqrt();
 
-    Matrix isqrt_S = evecs_S * isqrt_A * evecs_S.transpose();
+    isqrt_S = evecs_S * isqrt_A * evecs_S.transpose();
 
-    printf("\tS^-1/2 Matrix:\n\n");
-    print_matrix(isqrt_S);
+    if (toprint){
+        printf("\tS^-1/2 Matrix:\n\n");
+        print_matrix(isqrt_S);
+    }
 
-    Matrix H(norb, norb);
-
+    // initialize F matrix
     for (int i = 0; i < norb; i++){
         for (int j = 0; j < norb; j++){
-            H(i, j) = ham[i][j];
+            F(i, j) = ham[i][j];
         }
     }
 
-    Matrix F = isqrt_S.transpose() * H * isqrt_S;
-
-    printf("\tInitial F' Matrix:\n\n");
-    print_matrix(F);
-
-    solver.compute(F);
-    Matrix evecs_F = solver.eigenvectors();
-    Matrix evals_F = solver.eigenvalues();
-
-    Matrix C = isqrt_S * evecs_F;
-
-    printf("\tInitial C Matrix:\n\n");
-    print_matrix(C);
+    // initialize C matrix
+    Matrix Fp = isqrt_S.transpose() * F * isqrt_S;
     
-    Matrix D(norb, norb);
+    if (toprint){
+        printf("\tInitial F' Matrix:\n\n");
+        print_matrix(Fp);
+    }
 
+    solver.compute(Fp);
+    Matrix Cp = solver.eigenvectors();
+
+    C = isqrt_S * Cp;
+
+    if (toprint){
+        printf("\tInitial C Matrix:\n\n");
+        print_matrix(C);
+    }
+    
     // calculate number of occupied orbitals
     int nomo = calc_nomo();
 
@@ -306,11 +343,17 @@ void Molecule::compute_HF(){
         }
     }
 
-    printf("\tInitial Density Matrix:\n\n");
-    print_matrix(D);
+    if (toprint){
+        printf("\tInitial Density Matrix:\n\n");
+        print_matrix(D);
+    }
+}
+
+double Molecule::compute_hf(Matrix isqrt_S, Matrix &C, Matrix &D, Matrix &F){
 
     double E_prev = 0.0;
-    double E_curr = calc_hf_energy(D, H, F);
+
+    double E_curr = calc_hf_energy(D, F);
 
     double delta_E = E_curr - E_prev;
     double rms = 1.0;
@@ -318,51 +361,108 @@ void Molecule::compute_HF(){
     int count = 0;
 
     printf("Iter\t\tE(elec)  \t\tE(tot)  \t\tDelta(E)  \t\tRMS(D)\n");
-    printf("%02d%21.12f%21.12f\n\n", count, E_curr, E_curr + enuc);
+    printf("%02d%21.12f%21.12f\n", count, E_curr, E_curr + enuc);
 
-    while (delta_E > DELTA_1 || rms > DELTA_2 && count < MAXITER){
-        // compute new Fock Matrix
-        updateFock(F, H, D);
+    //Matrix *err = new Matrix[MAXERR];
+    //Matrix *f = new Matrix[MAXERR];
+
+
+    while (count < MAXITER && (abs(delta_E) > DELTA_1 || rms > DELTA_2)){
+        E_prev = E_curr;
+
+        updateFock(F, D);
+
+        Matrix new_D = Matrix::Zero(norb, norb);
+        updateDensity(new_D, isqrt_S, C, F);
 
         if(count == 0){
             printf("\tFock Matrix:\n\n");
             print_matrix(F);
         }
-        //compute new density matrix
-        Matrix new_D(norb, norb);
-        updateDensity(new_D, isqrt_S, F, C);
+
+        E_curr = calc_hf_energy(D, F);
+        delta_E = E_curr - E_prev;
 
         rms = calc_rms(D, new_D);
-
+        
         D = new_D;
-
-        E_prev = E_curr;
-        E_curr = calc_hf_energy(new_D, H, F);
-        delta_E = E_curr - E_prev;
 
         count++;
         printf("%02d%21.12f%21.12f%21.12f%21.12f\n", count, E_curr, 
                                                      E_curr + enuc, delta_E, rms); 
+        }
+        
     }
     print_matrix(D);
+    return E_curr;
     //compute_dipole(D);
-    double E_mp2 = compute_mp2(C, evals_F);
-    printf("Escf = %20.12f\nEmp2 = %20.12f\nEtot = %20.12f\n", E_curr + enuc, 
-                                                             E_mp2, E_curr + enuc + E_mp2);
-    double E_cc = 0.0;
-    
-    if (( E_cc = compute_ccsd(C, H, evals_F)) != 0.0){
-        printf("Etot = %21.12f\n", E_curr + E_cc + enuc);
-    }
-   
+}
+
+double compute_diis(Matrix D, Matrix F, Matrix isqrt_S){
+    //Matrix e = isqrt_S.transpose() * (F * D * S - S * D * F) * isqrt_S;
+        
+        // if (count < MAXERR){
+        //     err[count] = e;
+        //     f[count] = F;
+        // } else {
+        //     for (int i = 1; i < MAXERR; i++){
+        //         err[i - 1] = err[i];
+        //         f[i - 1] = f[i];
+        //     }
+
+        //     err[MAXERR - 1] = e;
+        //     f[MAXERR - 1] = F;
+        // }
+        
+        //compute new density matrix
+        //int max = (count > MAXERR) ? MAXERR : count;
+        
+        if (count > 2){
+
+            // Eigen::MatrixXd B(max + 1, max + 1);
+
+            // for (int i = 0; i < max; i++){
+            //     for (int j = 0; j < max; j++){
+            //         B(i, j) = (err[i] * err[j].transpose()).trace();
+            //     }
+            // }
+
+            // for (int i = 0; i < max; i++){
+            //     B(max, i) = -1;
+            //     B(i, max) = -1;
+            // }
+
+            // B(max, max) = 0;
+
+            // Eigen::VectorXd b(max + 1);
+            // b(max) = -1;
+            
+            // Eigen::VectorXd c = B.householderQr().solve(b);
+
+            // Matrix Fp(norb, norb);
+
+            // for (int i = 0; i < max; i++){
+            //     Fp += c(i) * f[i];
+            // }
+            //updateDensity(new_D, isqrt_S, Fp, C);
+            
+        //} else {
+
+        }
 }
 
 double* Molecule::spatial_atom(double *eri, Matrix C){
     int max = INDEX(norb, norb);
     double *moeri = new double[INDEX(max, max)];
 
+    for (int i = 0; i < INDEX(max, max); i++){
+        moeri[i] = 0.0;
+    }
+
     double ****M = create4dmat(norb);
     double ****N = create4dmat(norb);
+    double ****P = create4dmat(norb);
+    double ****Q = create4dmat(norb);
     
     for (int i = 0; i < norb; i++){
         for (int j = 0; j < norb; j++){
@@ -395,7 +495,7 @@ double* Molecule::spatial_atom(double *eri, Matrix C){
             for (int k = 0; k < norb; k++){
                 for(int l = 0; l < norb; l++){
                     for (int p = 0; p < norb; p++){
-                        M[m][n][p][l] += C(k, p) * N[m][n][k][l];
+                        P[m][n][p][l] += C(k, p) * N[m][n][k][l];
                     }
                 }
             }
@@ -407,7 +507,7 @@ double* Molecule::spatial_atom(double *eri, Matrix C){
             for (int p = 0; p < norb; p++){
                 for(int l = 0; l < norb; l++){
                     for (int q = 0; q < norb; q++){
-                        N[m][n][p][q] += C(l, q) * M[m][n][p][l];
+                        Q[m][n][p][q] += C(l, q) * P[m][n][p][l];
                     }
                 }
             }
@@ -421,7 +521,7 @@ double* Molecule::spatial_atom(double *eri, Matrix C){
                     int mn = INDEX(m, n);
                     int pq = INDEX(p, q);
                     int mnpq = INDEX(mn, pq);
-                    moeri[mnpq] = N[m][n][p][q];
+                    moeri[mnpq] = Q[m][n][p][q];
                 }
             }
         }
@@ -429,6 +529,8 @@ double* Molecule::spatial_atom(double *eri, Matrix C){
 
     free4dmat(M, norb);
     free4dmat(N, norb);
+    free4dmat(P, norb);
+    free4dmat(Q, norb);
 
     return moeri;
 }
@@ -443,7 +545,12 @@ int Molecule::calc_nomo(){
     return nelec / 2;
 }
 
-double Molecule::compute_mp2(Matrix C, Matrix evals){
+double Molecule::compute_mp2(Matrix C, Matrix F, Matrix isqrt_S){
+
+    Matrix Fp = isqrt_S.transpose() * F * isqrt_S;
+
+    Eigen::SelfAdjointEigenSolver<Matrix> solver(Fp);
+    Matrix evals = solver.eigenvalues();
 
     double *moeri = spatial_atom(eri, C);
 
@@ -461,8 +568,8 @@ double Molecule::compute_mp2(Matrix C, Matrix evals){
                     int ja = INDEX(j, a);
 
                     E_mp2 += moeri[INDEX(ia, jb)] * (2 * moeri[INDEX(ia, jb)] - 
-                                                         moeri[INDEX(ib, ja)]) /
-                             (evals(i) + evals(j) - evals(a) - evals(b));
+                                                        moeri[INDEX(ib, ja)]) /
+                            (evals(i) + evals(j) - evals(a) - evals(b));
                 }
             }
         }
@@ -503,42 +610,43 @@ void Molecule::free4dmat(double ****mat, int size){
 double Molecule::calc_rms(Matrix mat, Matrix newmat){
     if (mat.rows() != newmat.rows() || mat.cols() != newmat.cols()) return 0.0;
     
-    double rms = 0.0;
+    double sum = 0.0;
     for (int i = 0; i < mat.rows(); i++){
         for (int j = 0; j < mat.cols(); j++){
-            rms += sqrt(pow(mat(i, j) - newmat(i, j), 2));
+            sum += pow(mat(i, j) - newmat(i, j), 2);
         }
     }
-    return rms;
+    return sqrt(sum);
 }
 
 double Molecule::calc_rms(double **mat, double **newmat, int size){
     
-    double rms = 0.0;
+    double sum = 0.0;
     for (int i = 0; i < size; i++){
         for (int j = 0; j < size; j++){
-            rms += sqrt(pow(mat[i][j] - newmat[i][j], 2));
+            sum += pow(mat[i][j] - newmat[i][j], 2);
         }
     }
-    return rms;
+    return sqrt(sum);
 }
 
-double Molecule::calc_hf_energy(Matrix D, Matrix H, Matrix F){
+double Molecule::calc_hf_energy(Matrix D, Matrix F){
     double E = 0.0;
     for (int i = 0; i < norb; i++){
         for (int j = 0; j < norb; j++){
-            E += D(i, j) * (H(i, j) + F(i, j));
+            E += D(i, j) * (ham[i][j] + F(i, j));
+
+            //printf("row%d, col%d, H(i, j) = %10.5f, D(i, j) = %10.5f, F(i, j) = %10.5f, E = %10.5f\n", i, j, H(i,j), D(i, j), F(i,j), D(i, j) * (H(i, j) + F(i, j)));
         }
     }
     return E;
 }
 
-void Molecule::updateFock(Matrix &F, Matrix H, Matrix D){
-
+void Molecule::updateFock(Matrix &F, Matrix D){
     for (int i = 0; i < norb; i++){
         for (int j = 0; j < norb; j++){
             
-            double sum = 0.0;
+            F(i, j) = ham[i][j];
             
             for (int k = 0; k < norb; k++){
                 for (int l = 0; l < norb; l++){
@@ -547,16 +655,15 @@ void Molecule::updateFock(Matrix &F, Matrix H, Matrix D){
                     int ik = INDEX(i, k);
                     int jl = INDEX(j, l);
 
-                    sum += D(k, l) * (2 * eri[INDEX(ij, kl)] - eri[INDEX(ik, jl)]);
+                    F(i, j) += D(k, l) * (2 * eri[INDEX(ij, kl)] - eri[INDEX(ik, jl)]);
                 }
             }
-            F(i, j) = H(i, j) + sum;
         }
     }
 }
 
 void Molecule::mobasis(Matrix C, Matrix F){
-    Matrix moF(norb, norb);
+    Matrix moF = Matrix::Zero(norb, norb);
     for (int i = 0; i < norb; i++){
         for (int j = 0; j < norb; j++){
             double sum = 0.0;
@@ -571,15 +678,15 @@ void Molecule::mobasis(Matrix C, Matrix F){
     print_matrix(moF);
 }
 
-void Molecule::updateDensity(Matrix &new_D, Matrix isqrt_S, Matrix F, Matrix C){
+void Molecule::updateDensity(Matrix &new_D, Matrix isqrt_S, Matrix &C, Matrix F){
     
-    F = isqrt_S.transpose() * F * isqrt_S;
+    Matrix Fp = isqrt_S.transpose() * F * isqrt_S;
 
-    Eigen::SelfAdjointEigenSolver<Matrix> solver(F);
-    Matrix evecs_F = solver.eigenvectors();
-    Matrix evals_F = solver.eigenvalues();
+    Eigen::SelfAdjointEigenSolver<Matrix> solver(Fp);
+    Matrix evecs_Fp = solver.eigenvectors();
+    Matrix evals_Fp = solver.eigenvalues();
 
-    C = isqrt_S * evecs_F;
+    C = isqrt_S * evecs_Fp;
 
     int nomo = calc_nomo();
 
@@ -603,7 +710,7 @@ void Molecule::coord(const char *dir){
     FILE *in;
     
     if ((in = fopen(path.c_str(), "r")) == NULL) {
-        perror("fopen() error");
+        perror("Error opening geom.dat");
         exit(-1);
     }
     
@@ -665,7 +772,6 @@ double**** Molecule::spatial_to_spin(double *moeri){
 
     double ****mospin = create4dmat(max);
 
-    // transform four-index MO spatial to MO spin
     for (int p = 0; p < max; p++){
         for (int q = 0; q < max; q++){
             for (int r = 0; r < max; r++){
@@ -679,7 +785,7 @@ double**** Molecule::spatial_to_spin(double *moeri){
                     int qr = INDEX(q / 2, r / 2);
                     is_same_parity = (p % 2 == s % 2) * (q % 2 == r % 2);
                     double b = moeri[INDEX(ps, qr)] * is_same_parity;
-                    mospin[p][q][r][s] = a - b;    
+                    mospin[p][q][r][s] = a - b;
                 }
             }
         }
@@ -706,19 +812,27 @@ void Molecule::free2dvec(double **vec, int size){
     delete[] vec;
 }
 
-double Molecule::compute_ccsd(Matrix C, Matrix H, Matrix evals){
-    int nso = 2 * norb;
+double Molecule::compute_ccsd(Matrix C, Matrix F, Matrix isqrt_S){
+    
+    Matrix Fp = isqrt_S.transpose() * F * isqrt_S;
+    Eigen::SelfAdjointEigenSolver<Matrix> solver(Fp);
+    Matrix evals = solver.eigenvalues();
 
+    int nso = 2 * norb;
+    // convert from MO spatial to MO spin
     double *moeri = spatial_atom(eri, C);
     double ****mospin = spatial_to_spin(moeri);
     
-    Matrix Fs(nso, nso);
+    Matrix Fs = Matrix::Zero(nso, nso);
 
     int noso = 2 * calc_nomo();
 
     for (int p = 0; p < nso; p++){
         for (int q = 0; q < nso; q++){
-            if (p == q) Fs(p, q) = evals(p/2);
+            if (p == q) {
+                Fs(p, q) = evals(p/2);
+                
+            }
         }
     }
 
@@ -756,9 +870,9 @@ double Molecule::compute_ccsd(Matrix C, Matrix H, Matrix evals){
     // initialize t_ia to zeros
     double **t_ia = create2dvec(nso);
 
-    Matrix Fae(nso, nso);
-    Matrix Fmi(nso, nso);
-    Matrix Fme(nso, nso);
+    Matrix Fae = Matrix::Zero(nso, nso);
+    Matrix Fmi = Matrix::Zero(nso, nso);
+    Matrix Fme = Matrix::Zero(nso, nso);
 
     double ****Wmnij = create4dmat(nso);
     double ****Wabef = create4dmat(nso); 
@@ -769,6 +883,7 @@ double Molecule::compute_ccsd(Matrix C, Matrix H, Matrix evals){
     double delta_E = E_prev - E_curr;
 
     int count = 0;
+    std::cout << calc_ccsd_energy(Fs, mospin, t_ijab, t_ia) << std::endl;
 
     while (count < MAXITER && abs(delta_E) > DELTA_1){
         
@@ -799,7 +914,6 @@ double Molecule::compute_ccsd(Matrix C, Matrix H, Matrix evals){
     free4dmat(Wmnij, nso);
     free4dmat(Wabef, nso);
     free4dmat(Wmbej, nso);
-    delete[] moeri;
 
     return E_curr;
 }
