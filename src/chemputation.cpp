@@ -17,7 +17,16 @@
 #define DELTA_2 1e-11
 
 #define INDEX(i, j) ((i>j) ? (((i)*((i)+1)/2)+(j)) : (((j)*((j)+1)/2)+(i)))
-#define here printf("here");
+
+Molecule::Molecule(const char *dir){
+    lookupTable();
+    read_coord(dir);
+    read_one_electron(dir);
+    hamiltonian();
+    read_two_electron(dir);
+    read_dipole(dir);
+    compute();
+}
 
 Molecule::~Molecule(){
     delete[] atoms;
@@ -35,7 +44,6 @@ Molecule::~Molecule(){
 }
 
 // lookup array
-
 void Molecule::lookupTable(){
     int* ioff = new int[MAXORB];
 
@@ -64,7 +72,7 @@ void Molecule::hamiltonian(){
 
 }
 
-void Molecule::_one_electron(const char *dir){
+void Molecule::read_one_electron(const char *dir){
 
     FILE *in;
     std::string direc = dir;
@@ -191,16 +199,6 @@ double** Molecule::readMatrix(const char* path){
     return mat;
 }
 
-Molecule::Molecule(const char *dir){
-    lookupTable();
-    read_coord(dir);
-    read_one_electron(dir);
-    hamiltonian();
-    read_two_electron(dir);
-    read_dipole(dir);
-    compute();
-}
-
 void Molecule::print_matrix(double **mat, int size){
 
     for (int i = 0; i < size; i++){
@@ -262,11 +260,11 @@ void Molecule::compute(){
     double E_mp2 = compute_mp2(C, F, isqrt_S);
     printf("Escf = %20.12f\nEmp2 = %20.12f\nEtot = %20.12f\n", E_scf + enuc, 
                                                              E_mp2, E_scf + enuc + E_mp2);
-    double E_cc = 0.0;
+    // double E_cc = 0.0;
     
-    if (( E_cc = compute_ccsd(C, F, isqrt_S)) != 0.0){
-        printf("Etot = %21.12f\n", E_scf + E_cc + enuc);
-    }
+    // if (( E_cc = compute_ccsd(C, F, isqrt_S)) != 0.0){
+    //     printf("Etot = %21.12f\n", E_scf + E_cc + enuc);
+    // }
 }
 
 void Molecule::initialize(int toprint, Matrix &isqrt_S, Matrix &C, Matrix &D, Matrix &F){
@@ -355,7 +353,7 @@ double Molecule::compute_hf(Matrix isqrt_S, Matrix &C, Matrix &D, Matrix &F){
     printf("Iter\t\tE(elec)  \t\tE(tot)  \t\tDelta(E)  \t\tRMS(D)\n");
     printf("%02d%21.12f%21.12f\n", count, E_curr, E_curr + enuc);
 
-    while (count < MAXITER && (abs(delta_E) > DELTA_1 || rms > DELTA_2)){
+    while (count < MAXITER && (abs(delta_E) >= DELTA_1 || rms >= DELTA_2)){
         E_prev = E_curr;
 
         updateFock(F, D);
@@ -380,8 +378,26 @@ double Molecule::compute_hf(Matrix isqrt_S, Matrix &C, Matrix &D, Matrix &F){
     }
 
     print_matrix(D);
+    compute_dipole(D);
     return E_curr;
-    //compute_dipole(D);
+}
+
+void Molecule::compute_dipole(Matrix D){
+    double dx = 0.0, dy = 0.0, dz = 0.0;
+    for (int i = 0; i < norb; i++){
+        for (int j = 0; j < norb; j++){
+            dx += 2 * D(i, j) * mux[i][j];
+            dy += 2 * D(i, j) * muy[i][j];
+            dz += 2 * D(i, j) * muz[i][j];
+        }
+    }
+    for (int i = 0; i < natom; i++){
+        dx += atoms[i].zval * atoms[i].x;
+        dy += atoms[i].zval * atoms[i].y;
+        dz += atoms[i].zval * atoms[i].z;
+    }
+    printf("Mux = %20.12f\nMuy = %20.12f\nMuz = %20.12f\n", dx, dy, dz);
+    printf("Total dipole moment (au) = %20.12f\n", dx + dy + dz);
 }
 
 double compute_diis(Matrix D, Matrix F, Matrix isqrt_S){
@@ -559,7 +575,7 @@ double Molecule::compute_mp2(Matrix C, Matrix F, Matrix isqrt_S){
 
                     E_mp2 += moeri[INDEX(ia, jb)] * (2 * moeri[INDEX(ia, jb)] - 
                                                         moeri[INDEX(ib, ja)]) /
-                            (evals(i) + evals(j) - evals(a) - evals(b));
+                             (evals(i) + evals(j) - evals(a) - evals(b));
                 }
             }
         }
@@ -815,8 +831,6 @@ double Molecule::compute_ccsd(Matrix C, Matrix F, Matrix isqrt_S){
     
     Matrix Fs = Matrix::Zero(nso, nso);
 
-    int noso = 2 * calc_nomo();
-
     for (int p = 0; p < nso; p++){
         for (int q = 0; q < nso; q++){
             if (p == q) {
@@ -825,7 +839,9 @@ double Molecule::compute_ccsd(Matrix C, Matrix F, Matrix isqrt_S){
         }
     }
 
+    int noso = 2 * calc_nomo();
     double ****D_ijab = create4dmat(nso);
+
     for (int i = 0; i < noso; i++){
         for (int j = 0; j < noso; j++){
             for (int a = noso; a < nso; a++){
@@ -872,7 +888,6 @@ double Molecule::compute_ccsd(Matrix C, Matrix F, Matrix isqrt_S){
     double delta_E = E_prev - E_curr;
 
     int count = 0;
-    printf("%20.12f\n", calc_ccsd_energy(Fs, mospin, t_ijab, t_ia));
 
     while (count < MAXITER && abs(delta_E) > DELTA_1){
         
@@ -1081,6 +1096,7 @@ void Molecule::updateT(double ****mospin, double ****t_ijab, double **t_ia, Matr
     int noso = 2 * calc_nomo();
     int nso = 2 * norb;
 
+    // update T1 matrix (Equation 1)
     double **tmp2d = create2dvec(nso);
 
     for (int i = 0; i < noso; i++){
@@ -1117,12 +1133,12 @@ void Molecule::updateT(double ****mospin, double ****t_ijab, double **t_ia, Matr
                     tmp2d[i][a] -= t_ia[n][f] * mospin[n][a][i][f];
                 }
             }
-
             t_ia[i][a] = tmp2d[i][a] / D_ia[i][a];
         }   
     }
     free2dvec(tmp2d, nso);
 
+    // update T2 matrix (Equation 2)
     double ****tmp4d = create4dmat(nso);
 
     for (int i = 0; i < noso; i++){
@@ -1177,11 +1193,9 @@ void Molecule::updateT(double ****mospin, double ****t_ijab, double **t_ia, Matr
                         }
                     }
                     t_ijab[i][j][a][b] = tmp4d[i][j][a][b] / D_ijab[i][j][a][b];
-                }
-                
+                } 
             }
         }
     }
-
     free4dmat(tmp4d, nso);
 }
