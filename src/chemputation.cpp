@@ -205,7 +205,7 @@ Molecule::Molecule(const char *dir){
 }
 
 int main (int argc, char **argv){
-    const char *s = "./input/ch4/STO-3G";
+    const char *s = "../input/ch4/STO-3G";
     Molecule m = Molecule(s);
 }
 
@@ -390,9 +390,9 @@ double Molecule::compute_hf(Matrix isqrt_S, Matrix &C, Matrix &D, Matrix &F){
         count++;
         printf("%02d%21.12f%21.12f%21.12f%21.12f\n", count, E_curr, 
                                                      E_curr + enuc, delta_E, rms); 
-        }
-        
     }
+        
+    
     print_matrix(D);
     return E_curr;
     //compute_dipole(D);
@@ -417,7 +417,7 @@ double compute_diis(Matrix D, Matrix F, Matrix isqrt_S){
         //compute new density matrix
         //int max = (count > MAXERR) ? MAXERR : count;
         
-        if (count > 2){
+        // if (count > 2){
 
             // Eigen::MatrixXd B(max + 1, max + 1);
 
@@ -448,7 +448,8 @@ double compute_diis(Matrix D, Matrix F, Matrix isqrt_S){
             
         //} else {
 
-        }
+        // }
+        return 0.0;
 }
 
 double* Molecule::spatial_atom(double *eri, Matrix C){
