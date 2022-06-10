@@ -56,7 +56,6 @@ void Molecule::lookupTable(){
     this -> ioff = ioff;
 }
 
-
 void Molecule::hamiltonian(){
     double **ham = create2dvec(norb);
     
