@@ -18,21 +18,23 @@ public:
     double **mux, **muy, **muz;
     
     void coord(const char*);
-    
     void read_one_electron(const char *dir);
     void read_two_electron(const char *dir);
     double** readMatrix(const char *path);
     Molecule(const char *dir);
-    //~Molecule();
+    ~Molecule();
     void print_matrix(double **mat, int size);
     void print_matrix(Matrix mat);
     void hamiltonian();
     int calc_norb(const char *path);
-    void compute_HF();
-    void updateFock(Matrix &F, Matrix H, Matrix D);
-    void updateDensity(Matrix &D, Matrix isqrt_S, Matrix F, Matrix C);
+    void compute();
+    double compute_hf(Matrix isqrt_S, Matrix &C, Matrix &D, Matrix &F);
+    void initialize(int toprint, Matrix &isqrt_S, Matrix &C, Matrix &D, Matrix &F);
+    void updateFock(Matrix &F, Matrix D);
+    void updateDensity(Matrix &D, Matrix isqrt_S, Matrix &C, Matrix F);
+    double compute_diis(Matrix D, Matrix F, Matrix isqrt_S);
     void lookupTable();
-    double calc_hf_energy(Matrix D, Matrix H, Matrix F);
+    double calc_hf_energy(Matrix D, Matrix F);
     double calc_ccsd_energy(Matrix Fs, double ****mospin, double ****t_ijab, double **t_ia);
     double calc_rms(Matrix D, Matrix new_D);
     double calc_rms(double **mat, double **newmat, int size);
@@ -41,12 +43,12 @@ public:
     void compute_dipole(Matrix D);
     double**** create4dmat(int size);
     void free4dmat(double ****mat, int size);
-    double compute_mp2(Matrix C, Matrix evals);
+    double compute_mp2(Matrix C, Matrix F, Matrix isqrt_S);
     void massctr(double *ctr);
     double**** spatial_to_spin(double *moeri);
     double* spatial_atom(double *eri, Matrix C);
     int calc_nomo();
-    double compute_ccsd(Matrix C, Matrix H, Matrix evals_F);
+    double compute_ccsd(Matrix C, Matrix F, Matrix isqrt_S);
     void free2dvec(double **vec, int size);
     double** create2dvec(int size);
     double tau(double ****t_ijab, double **t_ia, int i, int j, int a, int b);
