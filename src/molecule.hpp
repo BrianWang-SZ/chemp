@@ -25,7 +25,7 @@ public:
     void read_one_electron(const char *dir);
     void read_two_electron(const char *dir);
     double** readMatrix(const char *path);
-    Molecule(char const *dir);
+    Molecule(const char *dir);
     ~Molecule();
     void print_matrix(double **mat, int size);
     void print_matrix(Matrix mat);
