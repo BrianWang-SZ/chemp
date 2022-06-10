@@ -1,3 +1,7 @@
+#include "Eigen/Dense"
+#include "Eigen/Eigenvalues"
+#include "Eigen/Core"
+
 typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> Matrix;
 
 class Atom {
@@ -17,11 +21,11 @@ public:
     double **s, **t, **v, *eri, **ham;
     double **mux, **muy, **muz;
     
-    void coord(const char*);
+    void read_coord(const char*);
     void read_one_electron(const char *dir);
     void read_two_electron(const char *dir);
     double** readMatrix(const char *path);
-    Molecule(const char *dir);
+    Molecule(char const *dir);
     ~Molecule();
     void print_matrix(double **mat, int size);
     void print_matrix(Matrix mat);
