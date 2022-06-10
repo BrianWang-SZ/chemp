@@ -6,9 +6,6 @@
 #include <fstream>
 #include <string.h>
 #include <algorithm>
-#include "Eigen/Dense"
-#include "Eigen/Eigenvalues"
-#include "Eigen/Core"
 #include "molecule.hpp"
 #include "masses.h"
 #include "assert.h"
@@ -67,7 +64,7 @@ void Molecule::hamiltonian(){
 
 }
 
-void Molecule::read_one_electron(const char *dir){
+void Molecule::_one_electron(const char *dir){
 
     FILE *in;
     std::string direc = dir;
@@ -196,17 +193,12 @@ double** Molecule::readMatrix(const char* path){
 
 Molecule::Molecule(const char *dir){
     lookupTable();
-    coord(dir);
+    read_coord(dir);
     read_one_electron(dir);
     hamiltonian();
     read_two_electron(dir);
     read_dipole(dir);
     compute();
-}
-
-int main (int argc, char **argv){
-    const char *s = "../input/ch4/STO-3G";
-    Molecule m = Molecule(s);
 }
 
 void Molecule::print_matrix(double **mat, int size){
@@ -363,10 +355,6 @@ double Molecule::compute_hf(Matrix isqrt_S, Matrix &C, Matrix &D, Matrix &F){
     printf("Iter\t\tE(elec)  \t\tE(tot)  \t\tDelta(E)  \t\tRMS(D)\n");
     printf("%02d%21.12f%21.12f\n", count, E_curr, E_curr + enuc);
 
-    //Matrix *err = new Matrix[MAXERR];
-    //Matrix *f = new Matrix[MAXERR];
-
-
     while (count < MAXITER && (abs(delta_E) > DELTA_1 || rms > DELTA_2)){
         E_prev = E_curr;
 
@@ -380,25 +368,26 @@ double Molecule::compute_hf(Matrix isqrt_S, Matrix &C, Matrix &D, Matrix &F){
             print_matrix(F);
         }
 
-        E_curr = calc_hf_energy(D, F);
-        delta_E = E_curr - E_prev;
-
         rms = calc_rms(D, new_D);
         
         D = new_D;
+        E_curr = calc_hf_energy(D, F);
+        delta_E = E_curr - E_prev;
 
         count++;
         printf("%02d%21.12f%21.12f%21.12f%21.12f\n", count, E_curr, 
                                                      E_curr + enuc, delta_E, rms); 
     }
-        
-    
+
     print_matrix(D);
     return E_curr;
     //compute_dipole(D);
 }
 
 double compute_diis(Matrix D, Matrix F, Matrix isqrt_S){
+    //Matrix *err = new Matrix[MAXERR];
+    //Matrix *f = new Matrix[MAXERR];
+
     //Matrix e = isqrt_S.transpose() * (F * D * S - S * D * F) * isqrt_S;
         
         // if (count < MAXERR){
@@ -636,8 +625,6 @@ double Molecule::calc_hf_energy(Matrix D, Matrix F){
     for (int i = 0; i < norb; i++){
         for (int j = 0; j < norb; j++){
             E += D(i, j) * (ham[i][j] + F(i, j));
-
-            //printf("row%d, col%d, H(i, j) = %10.5f, D(i, j) = %10.5f, F(i, j) = %10.5f, E = %10.5f\n", i, j, H(i,j), D(i, j), F(i,j), D(i, j) * (H(i, j) + F(i, j)));
         }
     }
     return E;
@@ -702,7 +689,7 @@ void Molecule::updateDensity(Matrix &new_D, Matrix isqrt_S, Matrix &C, Matrix F)
     }
 }
 
-void Molecule::coord(const char *dir){
+void Molecule::read_coord(const char *dir){
 
     std::string direc = dir;
     std::string path = direc + "/geom.dat";
@@ -820,8 +807,10 @@ double Molecule::compute_ccsd(Matrix C, Matrix F, Matrix isqrt_S){
     Matrix evals = solver.eigenvalues();
 
     int nso = 2 * norb;
-    // convert from MO spatial to MO spin
+    
+    // convert from AO spatial to MO spatial
     double *moeri = spatial_atom(eri, C);
+    // convert from MO spatial to MO spin
     double ****mospin = spatial_to_spin(moeri);
     
     Matrix Fs = Matrix::Zero(nso, nso);
@@ -832,7 +821,6 @@ double Molecule::compute_ccsd(Matrix C, Matrix F, Matrix isqrt_S){
         for (int q = 0; q < nso; q++){
             if (p == q) {
                 Fs(p, q) = evals(p/2);
-                
             }
         }
     }
@@ -884,7 +872,7 @@ double Molecule::compute_ccsd(Matrix C, Matrix F, Matrix isqrt_S){
     double delta_E = E_prev - E_curr;
 
     int count = 0;
-    std::cout << calc_ccsd_energy(Fs, mospin, t_ijab, t_ia) << std::endl;
+    printf("%20.12f\n", calc_ccsd_energy(Fs, mospin, t_ijab, t_ia));
 
     while (count < MAXITER && abs(delta_E) > DELTA_1){
         
