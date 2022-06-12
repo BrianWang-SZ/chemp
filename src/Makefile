@@ -1,11 +1,11 @@
-chemputation: main.o chemputation.o
-        g++ main.o chemputation.o -o chemputation
+chemp: main.o chemp.o
+	g++ main.o chemp.o -o chemp
 
 main.o: main.cpp
-        g++ -c main.cpp
+	g++ -c main.cpp
 
-chemputation.o: chemputation.cpp
-        g++ -c chemputation.cpp
+chemp.o: chemp.cpp
+	g++ -c chemp.cpp
 
 clean:
-        rm *.o chemputation
+	rm *.o chemp
