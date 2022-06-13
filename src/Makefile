@@ -1,11 +1,14 @@
-chemp: main.o chemp.o
-	g++ main.o chemp.o -o chemp
+chemp: main.o Molecule.o GeomSolver.o
+	g++ main.o Molecule.o GeomSolver.o -o chemp
 
-main.o: main.cpp
+Molecule.o: Molecule.cpp
+	g++ -c Molecule.cpp
+
+GeomSolver.o: GeomSolver.cpp
+	g++ -c GeomSolver.cpp
+
+main.o:
 	g++ -c main.cpp
-
-chemp.o: chemp.cpp
-	g++ -c chemp.cpp
 
 clean:
 	rm *.o chemp
