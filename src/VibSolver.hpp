@@ -10,8 +10,8 @@ public:
     Vec2d hes;
 
     VibSolver(const char *, const char*);
-    void VibSolver::read_hes(const char* path);
-    void VibSolver::weight();
-    void VibSolver::compute();
-    void VibSolver::solve();
+    void read_hes(const char* path);
+    void weight();
+    void compute();
+    void solve();
 };

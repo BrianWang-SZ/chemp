@@ -12,15 +12,12 @@ Molecule::~Molecule(){
 }
 
 void Molecule::read_coord(const char *dir){
-
-    std::string direc = dir;
-    std::string path = direc + "/geom.dat";
     
     // open input file
     FILE *in;
     
-    if ((in = fopen(path.c_str(), "r")) == NULL) {
-        perror("Error opening geom.dat");
+    if ((in = fopen(dir, "r")) == NULL) {
+        perror("Error opening geom file");
         exit(-1);
     }
     

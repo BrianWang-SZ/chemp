@@ -2,6 +2,7 @@
 #include "masses.h"
 #include "Molecule.hpp"
 #include "Atom.hpp"
+#include "const.h"
 
 VibSolver::VibSolver(const char *geom, const char *hess){
     Molecule m(geom);
@@ -35,7 +36,7 @@ void VibSolver::read_hes(const char* path){
     this -> size = 3 * natom;
 
     // initialize hessian matrix
-    Vec2d hes(size, Vector(size, 0));
+    hes = Vec2d(size, Vector(size, 0));
 
     int count = 0;
 
@@ -50,8 +51,6 @@ void VibSolver::read_hes(const char* path){
         perror("Error closing file stream!");
         exit(-1);
     }
-
-    this -> hes = hes;
 }
 
 void VibSolver::weight(){
