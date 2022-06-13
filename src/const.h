@@ -1,3 +1,6 @@
+#ifndef CONST_H
+#define CONST_H
+
 // 1 A = ANGSTROM m
 #define ANGSTROM 1.00001495e-10
 // 1 Bohr = BOHR m
@@ -10,3 +13,5 @@
 #define PLANCK 6.62607015e-34
 // 1 Hartree = HARTREE J
 #define HARTREE 4.3597447222071e-18
+
+#endif /* CONST_H */
