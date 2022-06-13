@@ -29,8 +29,8 @@
 **
 */
 
-#ifndef _psi_include_masses_h_
-#define _psi_include_masses_h_
+#ifndef MASSES_H
+#define MASSES_H
 
 
 #define LAST_ATOMIC_INDEX (118)
@@ -1077,4 +1077,4 @@ static double atomic_masses[] =
 291.194384, 292.199786, 289.198862, 290.198590, 291.200011, 292.199786,
 291.206564, 291.206564, 292.207549, 293.214670, 293.214670};
 
-#endif /* header guard */
+#endif /* MASSES_H */
