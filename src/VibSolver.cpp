@@ -3,13 +3,21 @@
 #include "Molecule.hpp"
 #include "Atom.hpp"
 #include "const.h"
+#include <math.h>
+#include "type.h"
 
-VibSolver::VibSolver(const char *geom, const char *hess){
-    Molecule m(geom);
+VibSolver::VibSolver(Molecule &m, const char *hess){
     natom = m.natom;
     atoms = m.atoms;
 
     read_hes(hess);
+}
+
+VibSolver::~VibSolver(){
+    for (int i = 0; i < size; i++){
+	delete[] hes[i];
+    }
+    delete[] hes;
 }
 
 void VibSolver::read_hes(const char* path){
@@ -34,9 +42,13 @@ void VibSolver::read_hes(const char* path){
     
     // number of row/col of hessian matrix
     this -> size = 3 * natom;
-
+    
     // initialize hessian matrix
-    hes = Vec2d(size, Vector(size, 0));
+    hes = new double*[size];
+
+    for (int i = 0; i < size; i++){
+	hes[i] = new double[size];
+    }
 
     int count = 0;
 
@@ -58,7 +70,8 @@ void VibSolver::weight(){
         for (int j = 0; j < size; j++){
             int a = i / 3;
             int b = j / 3;
-            hes[i][j] /= sqrt(an2masses[atoms[a].zval] * an2masses[atoms[b].zval]);
+            hes[i][j] /= sqrt(an2masses[atoms[a].zval] * 
+			 an2masses[atoms[b].zval]);
         }
     }
 }

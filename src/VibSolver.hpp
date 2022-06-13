@@ -1,15 +1,17 @@
-
 #include "Atom.hpp"
 #include "type.h"
+#include "Molecule.hpp"
 
 class VibSolver{
 public:
     int natom = 0;
     Atom *atoms;
     int size;
-    Vec2d hes;
+    double **hes;
 
-    VibSolver(const char *, const char*);
+    VibSolver(Molecule &m, const char*);
+    ~VibSolver();
+
     void read_hes(const char* path);
     void weight();
     void compute();
