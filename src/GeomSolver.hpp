@@ -1,13 +1,9 @@
 #ifndef GEOMSOLVER_H
 #define GEOMSOLVER_H
 
-#include "Eigen/Dense"
-#include "Eigen/Eigenvalues"
-#include "Eigen/Core"
 #include "Atom.hpp"
 #include "Molecule.hpp"
-
-typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> Matrix;
+#include "type.h"
 
 class GeomSolver{
 public:
