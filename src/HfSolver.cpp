@@ -1,6 +1,14 @@
 #include "HfSolver.hpp"
+#include "Atom.hpp"
 #include "Molecule.hpp"
 #include "Helper.hpp"
+#include <fstream>
+
+#define MAXORB 100
+#define MAXITER 100
+#define MAXERR 8
+#define DELTA_1 1e-12
+#define DELTA_2 1e-11
 
 #define INDEX(i,j) (i>j) ? (ioff[i]+j) : (ioff[j]+i)
 
@@ -46,7 +54,7 @@ double** HfSolver::readMatrix(std::string path){
     FILE *in;
     double **mat = Helper::create2d(norb, norb);
 
-    if ((in = fopen(path, "r")) == NULL) {
+    if ((in = fopen(path.c_str(), "r")) == NULL) {
         fprintf(stderr, "Error opening %s\n", path);
         perror("");
         exit(-1);
@@ -212,11 +220,11 @@ double HfSolver::compute(){
         updateFock();
 
         Matrix new_D = Matrix::Zero(norb, norb);
-        updateDensity();
+        updateDensity(new_D);
 
         if(count == 0){
             printf("\tFock Matrix:\n\n");
-            print_matrix(F);
+            Helper::print_matrix(F);
         }
 
         rms = Helper::calc_rms(D, new_D);
@@ -231,8 +239,8 @@ double HfSolver::compute(){
     }
 
     if (toprint){
-        print_matrix(D);
-        compute_dipole(D);
+        Helper::print_matrix(D);
+        compute_dipole();
     }
 
     return E_curr;
@@ -291,16 +299,16 @@ void HfSolver::initialize(){
 
     if (toprint){
         printf("\tS^-1/2 Matrix:\n\n");
-        print_matrix(isqrt_S);
+        Helper::print_matrix(isqrt_S);
 
         printf("\tInitial F' Matrix:\n\n");
-        print_matrix(Fp);
+        Helper::print_matrix(Fp);
 
         printf("\tInitial C Matrix:\n\n");
-        print_matrix(C);
+        Helper::print_matrix(C);
         
         printf("\tInitial Density Matrix:\n\n");
-        print_matrix(D);
+        Helper::print_matrix(D);
     }
 }
 
@@ -334,7 +342,7 @@ void HfSolver::updateFock(){
     }
 }
 
-void HfSovler::updateDensity(Matrix &new_D){
+void HfSolver::updateDensity(Matrix &new_D){
     
     Matrix Fp = isqrt_S.transpose() * F * isqrt_S;
 

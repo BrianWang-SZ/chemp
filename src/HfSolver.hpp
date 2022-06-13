@@ -25,12 +25,13 @@ class HfSolver : public EnergySolver{
     int calc_norb(std::string path);
     void lookupTable();
     void read_dipole();
-    double calc_hf_energy(Matrix D, Matrix F);
-    void initialize(Matrix &isqrt_S, Matrix &C, Matrix &D, Matrix &F);
+    double calc_hf_energy();
+    void initialize();
     int calc_nomo();
     void updateFock();
     void updateDensity(Matrix &new_D);
-    double compute_hf(Matrix isqrt_S, Matrix &C, Matrix &D, Matrix &F);
-}
+    double compute();
+    void compute_dipole();
+};
 
 #endif /* HFSOLVER_H */

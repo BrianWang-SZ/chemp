@@ -4,9 +4,9 @@
 #include <string>
 #include "type.h"
 
-class EnergySolver(){
+class EnergySolver{
 public:
     virtual double compute() = 0;
-}
+};
 
 #endif /* ENERGYSOLVER_H */
