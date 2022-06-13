@@ -3,20 +3,21 @@
 #include <string>
 #include "Molecule.hpp"
 
-Molecule::Molecule(const char* path){
-    read_coord(path);
+Molecule::Molecule(std::string dir){
+    this -> dir = dir;
+    read_coord();
 }
 
 Molecule::~Molecule(){
     delete[] atoms;
 }
 
-void Molecule::read_coord(const char *dir){
-    
+void Molecule::read_coord(){
+    std::string path = dir + "/geom.dat";
     // open input file
     FILE *in;
     
-    if ((in = fopen(dir, "r")) == NULL) {
+    if ((in = fopen(path.c_str(), "r")) == NULL) {
         perror("Error opening geom file");
         exit(-1);
     }

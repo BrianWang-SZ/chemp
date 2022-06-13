@@ -5,12 +5,13 @@
 #include "const.h"
 #include <math.h>
 #include "type.h"
+#include <string>
 
-VibSolver::VibSolver(Molecule &m, const char *hess){
+VibSolver::VibSolver(Molecule &m){
     natom = m.natom;
     atoms = m.atoms;
 
-    read_hes(hess);
+    read_hes(m.dir);
 }
 
 VibSolver::~VibSolver(){
@@ -20,10 +21,12 @@ VibSolver::~VibSolver(){
     delete[] hes;
 }
 
-void VibSolver::read_hes(const char* path){
+void VibSolver::read_hes(std::string dir){
     // open input file
     FILE *in;
-    if ((in = fopen(path, "r")) == NULL) {
+    std::string path = dir + "/hessian.dat";
+
+    if ((in = fopen(path.c_str(), "r")) == NULL) {
         perror("fopen() error");
         exit(-1);
     }

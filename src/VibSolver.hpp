@@ -1,3 +1,6 @@
+#ifndef VIBSOLVER_H
+#define VIBSOLVER_H
+
 #include "Atom.hpp"
 #include "type.h"
 #include "Molecule.hpp"
@@ -9,11 +12,12 @@ public:
     int size;
     double **hes;
 
-    VibSolver(Molecule &m, const char*);
+    VibSolver(Molecule &m);
     ~VibSolver();
 
-    void read_hes(const char* path);
+    void read_hes(std::string dir);
     void weight();
     void compute();
     void solve();
 };
+#endif /* VIBSOLVER_H */
