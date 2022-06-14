@@ -1,6 +1,7 @@
 #include "HfSolver.hpp"
 #include "Molecule.hpp"
 #include "Helper.hpp"
+#include "EnergySolver.hpp"
 
 #define MAXITER 100
 #define DELTA_1 1e-12
@@ -8,7 +9,8 @@
 
 #define INDEX(i, j) ((i>j) ? (((i)*((i)+1)/2)+(j)) : (((j)*((j)+1)/2)+(i)))
 
-HfSolver::HfSolver(Molecule &m, bool toprint){
+HfSolver::HfSolver(Molecule &m, bool toprint):
+    EnergySolver(m, false){
     this -> toprint = toprint;
     computed = false;
     initialize();
