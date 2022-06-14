@@ -27,11 +27,11 @@ protected:
 
     double* spatial_atom();
     double**** spatial_to_spin(double *moeri);
+    double** readMatrix(std::string path);
 
 private:
     void read_one_electron();
     void read_two_electron();
-    double** readMatrix(std::string path);
     void hamiltonian();
     int calc_norb(std::string path);
     void lookupTable();
