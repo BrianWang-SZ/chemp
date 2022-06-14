@@ -476,3 +476,11 @@ void CCSolver::updateT(Matrix Fae, Matrix Fmi, Matrix Fme,
     }
     Helper::free4d(tmp4d, nso);
 }
+
+double CCSolver::tau(int i, int j, int a, int b){
+    return t_ijab[i][j][a][b] + t_ia[i][a] * t_ia[j][b] - t_ia[i][b] * t_ia[j][a];
+}
+
+double CCSolver::taut(int i, int j, int a, int b){
+    return t_ijab[i][j][a][b] + (t_ia[i][a] * t_ia[j][b] - t_ia[i][b] * t_ia[j][a]) / 2;
+}
