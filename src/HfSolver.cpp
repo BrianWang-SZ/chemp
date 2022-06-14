@@ -46,6 +46,10 @@ void HfSolver::compute_dipole(){
     }
     printf("Mux = %20.12f\nMuy = %20.12f\nMuz = %20.12f\n", dx, dy, dz);
     printf("Total dipole moment (au) = %20.12f\n", dx + dy + dz);
+
+    Helper::free2d(mux, norb);
+    Helper::free2d(muy, norb);
+    Helper::free2d(muz, norb);
 }
 
 double HfSolver::calc_hf_energy(){
