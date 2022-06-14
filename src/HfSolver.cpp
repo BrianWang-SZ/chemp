@@ -61,9 +61,6 @@ double HfSolver::calc_hf_energy(){
 
 double HfSolver::compute(){
 
-    if (computed && toprint) initialize(); 
-    else return calc_hf_energy();
-    
     double E_prev = 0.0;
 
     double E_curr = calc_hf_energy();
@@ -106,7 +103,7 @@ double HfSolver::compute(){
 
     if (toprint){
         Helper::print_matrix(D);
-        //compute_dipole();
+        compute_dipole();
     }
 
     computed = true;
