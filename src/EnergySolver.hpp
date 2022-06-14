@@ -8,11 +8,14 @@
 class EnergySolver{
 
 public:
-    EnergySolver(Molecule &m);
+    EnergySolver(Molecule &m, bool toprint);
     ~EnergySolver();
     virtual double compute() = 0;
 
 protected:
+    
+    bool toprint;
+    
     std::string dir;
     int natom = 0;
 

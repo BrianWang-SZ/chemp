@@ -1,10 +1,15 @@
 #include "EnergySolver.hpp"
 #include "Helper.hpp"
+#include "HfSolver.hpp"
+#include <fstream>
+#include <algorithm>
 
 #define MAXORB 100
 #define INDEX(i, j) ((i>j) ? (((i)*((i)+1)/2)+(j)) : (((j)*((j)+1)/2)+(i)))
 
-EnergySolver::EnergySolver(Molecule &m){
+EnergySolver::EnergySolver(Molecule &m, bool toprint){
+    this -> toprint = toprint;
+
     dir = m.dir;
     natom = m.natom;
     atoms = m.atoms;

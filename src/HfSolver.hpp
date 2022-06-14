@@ -19,7 +19,6 @@ protected:
     double* spatial_atom();
 
 private:
-    bool toprint;
     bool computed;
 
     void read_dipole(double **mux, double **muy, double **muz);
