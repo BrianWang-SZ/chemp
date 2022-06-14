@@ -35,6 +35,28 @@ CCSolver::~CCSolver(){
     Helper::free4d(D_ijab, nso);
 }
 
+double CCSolver::calc_ccsd_energy(){
+    double energy = 0.0;
+    
+    for (int i = 0; i < noso; i++){
+        for (int a = noso; a < nso; a++){
+            energy += Fs(i, a) * t_ia[i][a];
+        }
+    }
+
+    for (int i = 0; i < noso; i++){
+        for (int j = 0; j < noso; j++){
+            for (int a = noso; a < nso; a++){
+                for (int b = noso; b < nso; b++){
+                    energy += mospin[i][j][a][b] * t_ijab[i][j][a][b] / 4;
+                    energy += mospin[i][j][a][b] * t_ia[i][a] * t_ia[j][b] / 2;
+                }
+            }
+        }
+    }
+    return energy;
+}
+
 double CCSolver::compute(){
     Matrix Fae = Matrix::Zero(nso, nso);
     Matrix Fmi = Matrix::Zero(nso, nso);
