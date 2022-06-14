@@ -10,7 +10,6 @@ class HfSolver : public EnergySolver{
 public:
     
     HfSolver(Molecule &m, bool toprint);
-    ~HfSolver();
     double compute();
 
 protected:

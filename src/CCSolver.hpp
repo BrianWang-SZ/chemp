@@ -1,7 +1,6 @@
 #ifndef CCSOLVER_H
 #define CCSOLVER_H
 
-#include "EnergySolver.hpp"
 #include "Molecule.hpp"
 #include "HfSolver.hpp" 
 
