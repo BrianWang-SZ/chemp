@@ -28,7 +28,6 @@ void HfSolver::compute_dipole(){
     path = dir + "/muz.dat";
     muz = readMatrix(path.c_str());
 
-    printf("here\n");
     double dx = 0.0, dy = 0.0, dz = 0.0;
     for (int i = 0; i < norb; i++){
         for (int j = 0; j < norb; j++){
@@ -62,8 +61,6 @@ double HfSolver::calc_hf_energy(){
 }
 
 double HfSolver::compute(){
-    if (computed && toprint) initialize();
-    else return calc_hf_energy();
 
     double E_prev = 0.0;
 
