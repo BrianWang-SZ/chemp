@@ -157,8 +157,6 @@ void EnergySolver::read_one_electron(){
         exit(-1);
     }
 
-    printf("Nuclear repulsion energy = %20.10f\n", enuc);
-
     path = dir + "/s.dat";
     this -> s = readMatrix(path);
     
@@ -170,6 +168,8 @@ void EnergySolver::read_one_electron(){
     
 
     if (toprint){
+        printf("Nuclear repulsion energy = %20.10f\n", enuc);
+        
         printf("\n\tOverlap Integrals:\n\n");
         Helper::print_matrix(s, norb);
 
