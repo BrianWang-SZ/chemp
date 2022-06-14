@@ -1,8 +1,8 @@
 #include "HfSolver.hpp"
-#include "Atom.hpp"
 #include "Molecule.hpp"
 #include "Helper.hpp"
 #include <fstream>
+#include <algorithm>
 
 #define MAXORB 100
 #define MAXITER 100
@@ -10,7 +10,7 @@
 #define DELTA_1 1e-12
 #define DELTA_2 1e-11
 
-#define INDEX(i,j) (i>j) ? (ioff[i]+j) : (ioff[j]+i)
+#define INDEX(i, j) ((i>j) ? (((i)*((i)+1)/2)+(j)) : (((j)*((j)+1)/2)+(i)))
 
 HfSolver::HfSolver(Molecule &m, bool toprint){
     dir = m.dir;
@@ -23,6 +23,60 @@ HfSolver::HfSolver(Molecule &m, bool toprint){
     lookupTable();
     read_two_electron();
     read_dipole();
+}
+
+HfSolver::~HfSolver(){
+    delete[] eri;
+    delete[] ioff;
+
+    Helper::free2d(s, norb);
+    Helper::free2d(v, norb);
+    Helper::free2d(t, norb);
+    
+    Helper::free2d(ham, norb);
+    Helper::free2d(mux, norb);
+    Helper::free2d(muy, norb);
+    Helper::free2d(muz, norb);
+}
+
+void HfSolver::read_two_electron(){
+    FILE *in;
+    std::string path = dir + "/eri.dat";
+    
+    if ((in = fopen(path.c_str(), "r")) == NULL) {
+        perror("Error opening eri.dat");
+        exit(-1);
+    }
+
+    int i = norb - 1, j = norb - 1, 
+        k = norb - 1, l = norb - 1;
+
+    double val = 0.0;
+
+    int ij = INDEX(i, j);
+    int kl = INDEX(k, l);
+    int ijkl = INDEX(ij, kl);
+
+    double *eri = new double[ijkl + 1];
+
+    for(int i = 0; i < ijkl; i++){
+        eri[i] = 0.0;
+    }
+
+    while (fscanf(in, " %d %d %d %d %lf", &i, &j, &k, &l, &val) == 5) {
+        i--; j--; k--; l--;
+        ij = INDEX(i, j);
+        kl = INDEX(k, l);
+        ijkl = INDEX(ij, kl);
+        eri[ijkl] = val;
+    }
+
+    if (fclose(in)){
+        perror("Error closing eri.dat\n");
+        exit(-1);
+    }
+    
+    this -> eri = eri;
 }
 
 int HfSolver::calc_norb(std::string path){
@@ -52,10 +106,10 @@ double** HfSolver::readMatrix(std::string path){
     }
     
     FILE *in;
-    double **mat = Helper::create2d(norb, norb);
+    double **mat = Helper::create2d(norb);
 
     if ((in = fopen(path.c_str(), "r")) == NULL) {
-        fprintf(stderr, "Error opening %s\n", path);
+        fprintf(stderr, "Error opening %s\n", path.c_str());
         perror("");
         exit(-1);
     }
@@ -72,13 +126,13 @@ double** HfSolver::readMatrix(std::string path){
     }
     
     if (calc_norb(path) != norb) {
-        fprintf(stderr, "Inconsistent input file %s\n", path);
+        fprintf(stderr, "Inconsistent input file %s\n", path.c_str());
         perror("");
         exit(-1);
     }
 
     if (fclose(in)){
-        fprintf(stderr, "Error closing %s\n", path);
+        fprintf(stderr, "Error closing %s\n", path.c_str());
         perror("");
         exit(-1);
     }
@@ -132,12 +186,12 @@ void HfSolver::read_one_electron(){
 }
 
 void HfSolver::hamiltonian(){
-    double **ham = Helper::create2d(norb, norb);
+    double **ham = Helper::create2d(norb);
     
     for (int i = 0; i < norb; i++){
         for (int j = 0; j < norb; j++){
             ham[i][j] = t[i][j] + v[i][j];
-        }
+        } 
     }
     this -> ham = ham;
 
@@ -201,6 +255,7 @@ double HfSolver::calc_hf_energy(){
 }
 
 double HfSolver::compute(){
+    initialize();
 
     double E_prev = 0.0;
 
@@ -211,8 +266,10 @@ double HfSolver::compute(){
 
     int count = 0;
 
-    printf("Iter\t\tE(elec)  \t\tE(tot)  \t\tDelta(E)  \t\tRMS(D)\n");
-    printf("%02d%21.12f%21.12f\n", count, E_curr, E_curr + enuc);
+    if (toprint){ 
+        printf("Iter\t\tE(elec)  \t\tE(tot)  \t\tDelta(E)  \t\tRMS(D)\n");
+        printf("%02d%21.12f%21.12f\n", count, E_curr, E_curr + enuc);
+    }
 
     while (count < MAXITER && (abs(delta_E) >= DELTA_1 || rms >= DELTA_2)){
         E_prev = E_curr;
@@ -269,6 +326,7 @@ void HfSolver::initialize(){
 
     isqrt_S = evecs_S * isqrt_A * evecs_S.transpose();
 
+    F = Matrix::Zero(norb, norb);
     // initialize F matrix
     for (int i = 0; i < norb; i++){
         for (int j = 0; j < norb; j++){
@@ -287,6 +345,7 @@ void HfSolver::initialize(){
     // calculate number of occupied orbitals
     int nomo = calc_nomo();
 
+    D = Matrix::Zero(norb, norb);
     for (int i = 0; i < norb; i++){
         for (int j = 0; j < norb; j++){
             double sum = 0.0;

@@ -3,14 +3,18 @@
 
 #include "type.h"
 #include "EnergySolver.hpp"
+#include "Atom.hpp"
+#include "Molecule.hpp"
 
 class HfSolver : public EnergySolver{
+public:
     std::string dir;
     int norb = 0, natom = 0;
     Atom *atoms;
     double enuc = 0.0;
     int *ioff;
-    double **s, **t, **v, *eri, **ham;
+    double *eri;
+    double **s, **t, **v, **ham;
     double **mux, **muy, **muz;
     Matrix C, D, F, isqrt_S;
 

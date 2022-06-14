@@ -36,12 +36,12 @@ namespace Helper{
         printf("\n");
     }
 
-    double** create2d(int row, int col){
-        double **vec = new double*[row];
+    double** create2d(int size){
+        double **vec = new double*[size];
         
-        for (int i = 0; i < row; i++){
-            vec[i] = new double[col];
-            for (int j = 0; j < col; j++){
+        for (int i = 0; i < size; i++){
+            vec[i] = new double[size];
+            for (int j = 0; j < size; j++){
                 vec[i][j] = 0.0;
             }
         }
@@ -58,5 +58,12 @@ namespace Helper{
             }
         }
         return sqrt(sum);
+    }
+
+    void free2d(double **vec, int size){
+        for (int i = 0; i < size; i++){
+            delete[] vec[i];
+        }
+        delete[] vec;
     }
 }
