@@ -219,7 +219,6 @@ void HfSolver::updateDensity(Matrix &new_D){
 }
 
 double* HfSolver::spatial_atom(){
-    compute();
     
     int max = INDEX(norb - 1, norb - 1);
     double *moeri = new double[INDEX(max, max) + 1];
@@ -305,7 +304,6 @@ double* HfSolver::spatial_atom(){
 }
 
 double**** HfSolver::spatial_to_spin(double *moeri){
-    compute();
 
     double ****mospin = Helper::create4d(nso);
 
