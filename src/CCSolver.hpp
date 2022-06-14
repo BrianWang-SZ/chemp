@@ -5,20 +5,21 @@
 #include "Molecule.hpp"
 #include "HfSolver.hpp" 
 
-class CCSolver : public HfSolver{
+class CCSolver : public HFSolver{
 public:
-    int nso, noso;
+    double Escf;
     double *moeri;
     double ****mospin;
-    double **t_ia, **D_ia;
-    double ****t_ijab, ****D_ijab;
-    Matrix Fs;
 
     CCSolver(Molecule &m);
     ~CCSolver();
     double compute();
-    void spatial_atom();
-    void spatial_to_spin();
+
+private:
+    double **t_ia, **D_ia;
+    double ****t_ijab, ****D_ijab;
+    Matrix Fs, C, D, F;
+    
     void initialize_Fs();
     void initialize_D();
     void initialize_T();

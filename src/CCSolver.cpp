@@ -8,11 +8,10 @@
 #define MAXITER 100
 #define DELTA_1 1e-12
 
-CCSolver::CCSolver(Molecule &m) : HfSolver(m, false){
-    noso = 2 * nomo;
-    nso = 2 * norb;
+CCSolver::CCSolver(Molecule &m): 
+    HfSolver(m, false){
 
-    HfSolver::compute();
+    Escf = hfs.compute();
 
     // convert from AO spatial to MO spatial
     spatial_atom();
@@ -98,111 +97,6 @@ double CCSolver::compute(){
     return E_curr;
 }
 
-void CCSolver::spatial_atom(){
-    int max = INDEX(norb - 1, norb - 1);
-    moeri = new double[INDEX(max, max) + 1];
-
-    for (int i = 0; i < INDEX(max, max); i++){
-        moeri[i] = 0.0;
-    }
-
-    double ****M = Helper::create4d(norb);
-    double ****N = Helper::create4d(norb);
-    double ****P = Helper::create4d(norb);
-    double ****Q = Helper::create4d(norb);
-    
-    for (int i = 0; i < norb; i++){
-        for (int j = 0; j < norb; j++){
-            for (int k = 0; k < norb; k++){
-                for(int l = 0; l < norb; l++){
-                    for (int m = 0; m < norb; m++){
-                        int ij = INDEX(i, j);
-                        int kl = INDEX(k, l);
-                        M[m][j][k][l] += C(i, m) * eri[INDEX(ij, kl)];
-                    }
-                }
-            }
-        }
-    }
-
-    for (int m = 0; m < norb; m++){
-        for (int j = 0; j < norb; j++){
-            for (int k = 0; k < norb; k++){
-                for(int l = 0; l < norb; l++){
-                    for (int n = 0; n < norb; n++){
-                        N[m][n][k][l] += C(j, n) * M[m][j][k][l];
-                    }
-                }
-            }
-        }
-    }
-
-    for (int m = 0; m < norb; m++){
-        for (int n = 0; n < norb; n++){
-            for (int k = 0; k < norb; k++){
-                for(int l = 0; l < norb; l++){
-                    for (int p = 0; p < norb; p++){
-                        P[m][n][p][l] += C(k, p) * N[m][n][k][l];
-                    }
-                }
-            }
-        }
-    }
-
-    for (int m = 0; m < norb; m++){
-        for (int n = 0; n < norb; n++){
-            for (int p = 0; p < norb; p++){
-                for(int l = 0; l < norb; l++){
-                    for (int q = 0; q < norb; q++){
-                        Q[m][n][p][q] += C(l, q) * P[m][n][p][l];
-                    }
-                }
-            }
-        }
-    }
-
-    for (int m = 0; m < norb; m++){
-        for (int n = 0; n < norb; n++){
-            for (int p = 0; p < norb; p++){
-                for (int q = 0; q < norb; q++){
-                    int mn = INDEX(m, n);
-                    int pq = INDEX(p, q);
-                    int mnpq = INDEX(mn, pq);
-                    moeri[mnpq] = Q[m][n][p][q];
-                }
-            }
-        }
-    }
-
-    Helper::free4d(M, norb);
-    Helper::free4d(N, norb);
-    Helper::free4d(P, norb);
-    Helper::free4d(Q, norb);
-}
-
-void CCSolver::spatial_to_spin(){
-
-    mospin = Helper::create4d(nso);
-
-    for (int p = 0; p < nso; p++){
-        for (int q = 0; q < nso; q++){
-            for (int r = 0; r < nso; r++){
-                for (int s = 0; s < nso; s++){
-                    int pr = INDEX(p / 2, r / 2);
-                    int qs = INDEX(q / 2, s / 2);
-                    int is_same_parity = (p % 2 == r % 2) * (q % 2 == s % 2);
-                    double a = moeri[INDEX(pr, qs)] * is_same_parity;
-                    
-                    int ps = INDEX(p / 2, s / 2);
-                    int qr = INDEX(q / 2, r / 2);
-                    is_same_parity = (p % 2 == s % 2) * (q % 2 == r % 2);
-                    double b = moeri[INDEX(ps, qr)] * is_same_parity;
-                    mospin[p][q][r][s] = a - b;
-                }
-            }
-        }
-    }
-}
 
 void CCSolver::initialize_Fs(){
     Matrix Fp = isqrt_S.transpose() * F * isqrt_S;
