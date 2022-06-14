@@ -16,9 +16,11 @@ CCSolver::CCSolver(Molecule &m):
     moeri = spatial_atom();
     // convert from MO spatial to MO spin
     mospin = spatial_to_spin(moeri);
-    
+    printf("here\n");
     initialize_Fs();
+    printf("here\n");
     initialize_D();
+    printf("here\n");
     initialize_T();
     printf("here\n");
 }
