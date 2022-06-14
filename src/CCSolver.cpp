@@ -11,9 +11,10 @@
 CCSolver::CCSolver(Molecule &m): 
     HfSolver(m, false){
 
-    
+    printf("here\n");
     // convert from AO spatial to MO spatial
     moeri = spatial_atom();
+    printf("here\n");
     // convert from MO spatial to MO spin
     mospin = spatial_to_spin(moeri);
     printf("here\n");
