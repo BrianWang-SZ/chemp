@@ -108,7 +108,7 @@ double HfSolver::compute(){
 
     if (toprint){
         Helper::print_matrix(D);
-        compute_dipole();
+        //compute_dipole();
     }
 
     computed = true;
