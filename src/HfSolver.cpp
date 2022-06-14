@@ -8,8 +8,7 @@
 
 #define INDEX(i, j) ((i>j) ? (((i)*((i)+1)/2)+(j)) : (((j)*((j)+1)/2)+(i)))
 
-HfSolver::HfSolver(Molecule &m, bool toprint):
-    EnergySolver(m, toprint){
+HfSolver::HfSolver(Molecule &m, bool toprint){
     this -> toprint = toprint;
     computed = false;
     initialize();
@@ -60,6 +59,8 @@ double HfSolver::calc_hf_energy(){
 }
 
 double HfSolver::compute(){
+    if (computed && toprint) initialize();
+    else return calc_hf_energy();
 
     double E_prev = 0.0;
 
