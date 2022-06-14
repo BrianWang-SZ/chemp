@@ -11,12 +11,10 @@
 CCSolver::CCSolver(Molecule &m): 
     HfSolver(m, false){
 
-    Escf = hfs.compute();
-
     // convert from AO spatial to MO spatial
-    spatial_atom();
+    moeri = spatial_atom();
     // convert from MO spatial to MO spin
-    spatial_to_spin();
+    mospin = spatial_to_spin(moeri);
     
     initialize_Fs();
     initialize_D();
@@ -57,6 +55,8 @@ double CCSolver::calc_ccsd_energy(){
 }
 
 double CCSolver::compute(){
+    double Escf = HfSolver::compute();
+    printf("Escf = %20.12f\n", E_scf + enuc);
     Matrix Fae = Matrix::Zero(nso, nso);
     Matrix Fmi = Matrix::Zero(nso, nso);
     Matrix Fme = Matrix::Zero(nso, nso);
