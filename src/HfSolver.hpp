@@ -17,6 +17,7 @@ protected:
     Matrix C, D, F, isqrt_S;
 
     double* spatial_atom();
+    double**** spatial_to_spin(double *moeri);
 
 private:
     bool computed;

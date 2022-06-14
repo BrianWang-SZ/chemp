@@ -21,15 +21,13 @@ protected:
 
     int norb = 0, nomo = 0,
         nso = 0, noso = 0;
-        
+
     Atom *atoms;
     double enuc = 0.0;
     int *ioff;
     double *eri;
     double **s, **t, **v, **ham;
 
-    double* spatial_atom();
-    double**** spatial_to_spin(double *moeri);
     double** readMatrix(std::string path);
 
 private:
