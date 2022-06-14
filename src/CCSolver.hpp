@@ -5,7 +5,7 @@
 #include "Molecule.hpp"
 #include "HfSolver.hpp" 
 
-class CCSolver : public HFSolver{
+class CCSolver : public HfSolver{
 public:
     double Escf;
     double *moeri;

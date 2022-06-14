@@ -2,6 +2,7 @@
 #include "GeomSolver.hpp"
 #include "VibSolver.hpp"
 #include "HfSolver.hpp"
+#include "CCSolver.hpp"
 
 int main (int argc, char **argv){
     const char *s = "../input/h2o/STO-3G"; 
@@ -12,4 +13,6 @@ int main (int argc, char **argv){
     // gs.solve();
     // VibSolver vs(m);
     // vs.solve();
+    CCSolver ccs(m);
+    ccs.compute();
 }
