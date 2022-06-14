@@ -22,7 +22,7 @@ private:
     bool toprint;
     bool computed;
 
-    void read_dipole(double ****mux, double ****muy, double ****muz);
+    void read_dipole(double **mux, double **muy, double **muz);
     double calc_hf_energy();
     void initialize();
     void updateFock();

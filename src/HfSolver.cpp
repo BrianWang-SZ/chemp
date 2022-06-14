@@ -17,7 +17,7 @@ HfSolver::HfSolver(Molecule &m, bool toprint):
     initialize();
 }
 
-void HfSolver::read_dipole(double ****mux, double ****muy, double ****muz){
+void HfSolver::read_dipole(double **mux, double **muy, double **muz){
     std::string path = dir + "/mux.dat";
     mux = readMatrix(path.c_str());
 
@@ -29,7 +29,7 @@ void HfSolver::read_dipole(double ****mux, double ****muy, double ****muz){
 }
 
 void HfSolver::compute_dipole(){
-    double ****mux, ****muy, ****muz;
+    double **mux, **muy, **muz;
     read_dipole(mux, muy, muz);
 
     double dx = 0.0, dy = 0.0, dz = 0.0;
