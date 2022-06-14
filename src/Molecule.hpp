@@ -7,12 +7,13 @@
 class Molecule {
 public:
     std::string dir;
-    int natom;
+    int natom, nomo;
     Atom *atoms;
     
     Molecule(std::string dir);
     ~Molecule();
-    void read_coord(); 
+    void read_coord();
+    int calc_nomo();
 };
 
 #endif /* MOLECULE_H */

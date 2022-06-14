@@ -6,6 +6,7 @@
 Molecule::Molecule(std::string dir){
     this -> dir = dir;
     read_coord();
+    nomo = calc_nomo();
 }
 
 Molecule::~Molecule(){
@@ -59,4 +60,14 @@ void Molecule::read_coord(){
     }
 
     this -> atoms = atoms;
+}
+
+int Molecule::calc_nomo(){
+    int nelec = 0;
+
+    for (int i = 0; i < natom; i++){
+        nelec += atoms[i].zval;
+    }
+
+    return nelec / 2;
 }

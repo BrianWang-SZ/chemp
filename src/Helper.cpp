@@ -66,4 +66,34 @@ namespace Helper{
         }
         delete[] vec;
     }
+
+    double**** create4d(int size){
+        double ****mat = new double***[size];
+        for (int i = 0; i < size; i++){
+            mat[i] = new double**[size];
+            for (int j = 0; j < size; j++){
+                mat[i][j] = new double*[size];
+                for (int k = 0; k < size; k++){
+                    mat[i][j][k] = new double[size];
+                    for (int l = 0; l < size; l++){
+                        mat[i][j][k][l] = 0.0;
+                    }
+                }
+            } 
+        }
+        return mat;
+    }
+
+    void free4d(double ****mat, int size){
+        for (int i = 0; i < size; i++){
+            for (int j = 0; j < size; j++){
+                for (int k = 0; k < size; k++){
+                    delete[] mat[i][j][k];
+                }
+                delete[] mat[i][j];
+            }
+            delete[] mat[i];
+        }
+        delete[] mat;
+    }
 }

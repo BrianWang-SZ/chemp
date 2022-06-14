@@ -6,7 +6,6 @@
 
 #define MAXORB 100
 #define MAXITER 100
-#define MAXERR 8
 #define DELTA_1 1e-12
 #define DELTA_2 1e-11
 
@@ -16,6 +15,7 @@ HfSolver::HfSolver(Molecule &m, bool toprint){
     dir = m.dir;
     natom = m.natom;
     atoms = m.atoms;
+    nomo = m.nomo;
     this -> toprint = toprint;
     
     read_one_electron();
@@ -279,7 +279,7 @@ double HfSolver::compute(){
         Matrix new_D = Matrix::Zero(norb, norb);
         updateDensity(new_D);
 
-        if(count == 0){
+        if(toprint && count == 0){
             printf("\tFock Matrix:\n\n");
             Helper::print_matrix(F);
         }
@@ -291,8 +291,10 @@ double HfSolver::compute(){
         delta_E = E_curr - E_prev;
 
         count++;
-        printf("%02d%21.12f%21.12f%21.12f%21.12f\n", count, E_curr, 
+        if(toprint){
+            printf("%02d%21.12f%21.12f%21.12f%21.12f\n", count, E_curr, 
                                                      E_curr + enuc, delta_E, rms); 
+        }
     }
 
     if (toprint){
@@ -341,9 +343,6 @@ void HfSolver::initialize(){
     Matrix Cp = solver.eigenvectors();
 
     C = isqrt_S * Cp;
-    
-    // calculate number of occupied orbitals
-    int nomo = calc_nomo();
 
     D = Matrix::Zero(norb, norb);
     for (int i = 0; i < norb; i++){
@@ -369,16 +368,6 @@ void HfSolver::initialize(){
         printf("\tInitial Density Matrix:\n\n");
         Helper::print_matrix(D);
     }
-}
-
-int HfSolver::calc_nomo(){
-    int nelec = 0;
-
-    for (int i = 0; i < natom; i++){
-        nelec += atoms[i].zval;
-    }
-
-    return nelec / 2;
 }
 
 void HfSolver::updateFock(){
@@ -410,8 +399,6 @@ void HfSolver::updateDensity(Matrix &new_D){
     Matrix evals_Fp = solver.eigenvalues();
 
     C = isqrt_S * evecs_Fp;
-
-    int nomo = calc_nomo();
 
     for (int i = 0; i < norb; i++){
         for (int j = 0; j < norb; j++){

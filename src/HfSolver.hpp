@@ -9,7 +9,7 @@
 class HfSolver : public EnergySolver{
 public:
     std::string dir;
-    int norb = 0, natom = 0;
+    int norb = 0, natom = 0, nomo = 0;
     Atom *atoms;
     double enuc = 0.0;
     int *ioff;
@@ -31,7 +31,6 @@ public:
     void read_dipole();
     double calc_hf_energy();
     void initialize();
-    int calc_nomo();
     void updateFock();
     void updateDensity(Matrix &new_D);
     double compute();
