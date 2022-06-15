@@ -118,7 +118,7 @@ double HfSolver::compute(){
 void HfSolver::initialize(){
 
     // initialize S^(-1/2) matrix
-    Matrix S = Matrix::Zero(norb, norb);
+    Matrix S(norb, norb);
 
     for (int i = 0; i < norb; i++){
         for (int j = 0; j < norb; j++){
@@ -138,7 +138,7 @@ void HfSolver::initialize(){
 
     isqrt_S = evecs_S * isqrt_A * evecs_S.transpose();
 
-    F = Matrix::Zero(norb, norb);
+    F = Matrix(norb, norb);
     // initialize F matrix
     for (int i = 0; i < norb; i++){
         for (int j = 0; j < norb; j++){
@@ -154,7 +154,7 @@ void HfSolver::initialize(){
 
     C = isqrt_S * Cp;
 
-    D = Matrix::Zero(norb, norb);
+    D = Matrix(norb, norb);
     for (int i = 0; i < norb; i++){
         for (int j = 0; j < norb; j++){
             double sum = 0.0;
