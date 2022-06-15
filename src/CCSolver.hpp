@@ -6,7 +6,6 @@
 
 class CCSolver : public HfSolver{
 public:
-    double Escf;
     double *moeri;
     double ****mospin;
 

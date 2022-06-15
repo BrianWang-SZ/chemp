@@ -13,8 +13,6 @@ CCSolver::CCSolver(Molecule &m):
 
     // convert from AO spatial to MO spatial
     moeri = spatial_atom();
-    printf("constructor C\n");
-    Helper::print_matrix(C);
     // convert from MO spatial to MO spin
     mospin = spatial_to_spin(moeri);
 
