@@ -60,6 +60,8 @@ double HfSolver::calc_hf_energy(){
 }
 
 double HfSolver::compute(){
+    if (computed) return calc_hf_energy();
+    
     initialize();
 
     double E_prev = 0.0;
