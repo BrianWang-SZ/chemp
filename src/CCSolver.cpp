@@ -13,7 +13,8 @@ CCSolver::CCSolver(Molecule &m):
 
     printf("here\n");
     HfSolver::compute();
-    Helper::print_matrix(F);
+    Helper::print_matrix(C);
+    Helper::print_matrix(D);
     printf("here\n, %f", HfSolver::compute());
     Helper::print_matrix(F);
     // convert from AO spatial to MO spatial
