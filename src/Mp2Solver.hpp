@@ -10,6 +10,6 @@ public:
 
 private:
     double *moeri;
-}
+};
 
 #endif /* MP2SOLVER_H */
