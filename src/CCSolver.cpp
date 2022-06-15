@@ -54,8 +54,6 @@ double CCSolver::calc_ccsd_energy(){
 }
 
 double CCSolver::compute(){
-    double Escf = HfSolver::compute();
-    printf("Escf = %20.12f\n", Escf + enuc);
     
     Matrix Fae = Matrix::Zero(nso, nso);
     Matrix Fmi = Matrix::Zero(nso, nso);

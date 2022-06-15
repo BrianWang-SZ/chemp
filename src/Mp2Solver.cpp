@@ -35,5 +35,13 @@ double Mp2Solver::compute(){
             }
         }
     }
+
+    if (toprint){
+        double E_scf = HfSolver::compute();
+        printf("Escf = %20.12f\n"
+               "Emp2 = %20.12f\n"
+               "Etot = %20.12f\n", E_scf + enuc, E_mp2, E_scf + enuc + E_mp2);
+    }
+
     return E_mp2;
 }
