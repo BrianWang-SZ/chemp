@@ -15,6 +15,11 @@ CCSolver::CCSolver(Molecule &m):
     moeri = spatial_atom();
     // convert from MO spatial to MO spin
     mospin = spatial_to_spin(moeri);
+    
+    this -> C = HfSolver::C;
+    this -> D = HfSolver::D;
+    this -> F = HfSolver::F;
+    this -> isqrt_S = HfSolver::isqrt_S;
 
     initialize_Fs();
     initialize_D();
