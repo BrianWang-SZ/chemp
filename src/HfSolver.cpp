@@ -13,6 +13,10 @@ HfSolver::HfSolver(Molecule &m, bool toprint):
     EnergySolver(m, false){
     this -> toprint = toprint;
     computed = false;
+    C = Matrix(norb, norb);
+    D = Matrix(norb, norb);
+    F = Matrix(norb, norb);
+    isqrt_S = Matrix(norb, norb);
 }
 
 void HfSolver::compute_dipole(){
@@ -138,7 +142,6 @@ void HfSolver::initialize(){
 
     isqrt_S = evecs_S * isqrt_A * evecs_S.transpose();
 
-    F = Matrix(norb, norb);
     // initialize F matrix
     for (int i = 0; i < norb; i++){
         for (int j = 0; j < norb; j++){
@@ -154,7 +157,6 @@ void HfSolver::initialize(){
 
     C = isqrt_S * Cp;
 
-    D = Matrix(norb, norb);
     for (int i = 0; i < norb; i++){
         for (int j = 0; j < norb; j++){
             double sum = 0.0;
