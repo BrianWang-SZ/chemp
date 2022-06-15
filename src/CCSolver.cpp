@@ -98,11 +98,11 @@ double CCSolver::compute(){
 void CCSolver::initialize_Fs(){
     //Matrix evals = get_eval();
 
-    Matrix Fcc(nso, nso);
+    Matrix Fcc(norb, norb);
 
-    for (int p = 0; p < nso; p++){
-        for (int q = 0; q < nso; q++){
-            Fcc(p, q) = ham[p/2][q/2];
+    for (int p = 0; p < norb; p++){
+        for (int q = 0; q < norb; q++){
+            Fcc(p, q) = ham[p][q];
             for (int m = 0; m < noso; m++){
                 Fcc(p, q) += mospin[p][m][q][m];
             }
