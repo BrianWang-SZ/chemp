@@ -6,14 +6,15 @@
 
 class CCSolver : public HfSolver{
 public:
-    double *moeri;
-    double ****mospin;
 
     CCSolver(Molecule &m);
     ~CCSolver();
     double compute();
 
 private:
+    double *moeri;
+    double ****mospin;
+    
     double **t_ia, **D_ia;
     double ****t_ijab, ****D_ijab;
     Matrix Fs;

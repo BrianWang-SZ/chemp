@@ -17,6 +17,12 @@ HfSolver::HfSolver(Molecule &m, bool toprint):
     if (!toprint) compute();
 }
 
+Matrix HfSolver::get_eval(){
+    Matrix Fp = isqrt_S.transpose() * F * isqrt_S;
+    Eigen::SelfAdjointEigenSolver<Matrix> solver(Fp);
+    return solver.eigenvalues();
+}
+
 void HfSolver::compute_dipole(){
     double **mux, **muy, **muz;
     

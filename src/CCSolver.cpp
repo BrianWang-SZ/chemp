@@ -101,9 +101,7 @@ double CCSolver::compute(){
 
 
 void CCSolver::initialize_Fs(){
-    Matrix Fp = isqrt_S.transpose() * F * isqrt_S;
-    Eigen::SelfAdjointEigenSolver<Matrix> solver(Fp);
-    Matrix evals = solver.eigenvalues();
+    Matrix evals = get_eval();
 
     for (int p = 0; p < nso; p++){
         for (int q = 0; q < nso; q++){
