@@ -54,7 +54,6 @@ double CCSolver::calc_ccsd_energy(){
 }
 
 double CCSolver::compute(){
-    printf("%f", calc_ccsd_energy());
     Matrix Fae = Matrix::Zero(nso, nso);
     Matrix Fmi = Matrix::Zero(nso, nso);
     Matrix Fme = Matrix::Zero(nso, nso);
@@ -97,7 +96,24 @@ double CCSolver::compute(){
 
 
 void CCSolver::initialize_Fs(){
-    Matrix evals = get_eval();
+    //Matrix evals = get_eval();
+
+    Matrix Fcc(nso, nso);
+
+    for (int p = 0; p < nso; p++){
+        for (int q = 0; q < nso; q++){
+            Fcc(p, q) = ham[p/2][q/2];
+            for (int m = 0; m < noso; m++){
+                Fcc(p, q) += mospin[p][m][q][m];
+            }
+        }
+    }
+
+    Helper::print_matrix(Fcc);
+
+    Eigen::SelfAdjointEigenSolver<Matrix> solver(Fcc);
+    Matrix evals = solver.eigenvalues();
+
 
     for (int p = 0; p < nso; p++){
         for (int q = 0; q < nso; q++){
