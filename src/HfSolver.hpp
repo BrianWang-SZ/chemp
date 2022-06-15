@@ -13,7 +13,7 @@ public:
     double compute();
 
 protected:
-    Matrix &C, &D, &F, &isqrt_S;
+    Matrix C, D, F, isqrt_S;
 
     double* spatial_atom();
     double**** spatial_to_spin(double *moeri);
