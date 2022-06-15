@@ -13,7 +13,6 @@ HfSolver::HfSolver(Molecule &m, bool toprint):
     EnergySolver(m, false){
     this -> toprint = toprint;
     computed = false;
-    initialize();
 }
 
 void HfSolver::compute_dipole(){
@@ -61,6 +60,7 @@ double HfSolver::calc_hf_energy(){
 }
 
 double HfSolver::compute(){
+    initialize();
 
     double E_prev = 0.0;
 
