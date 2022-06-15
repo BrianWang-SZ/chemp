@@ -14,6 +14,7 @@ HfSolver::HfSolver(Molecule &m, bool toprint):
     F(norb, norb), isqrt_S(norb, norb){
     this -> toprint = toprint;
     computed = false;
+    compute();
 }
 
 void HfSolver::compute_dipole(){
@@ -61,7 +62,7 @@ double HfSolver::calc_hf_energy(){
 }
 
 double HfSolver::compute(){
-    if (computed) return calc_hf_energy();
+    if (computed && !toprint) return calc_hf_energy();
     
     initialize();
 
@@ -222,7 +223,7 @@ void HfSolver::updateDensity(Matrix &new_D){
 
 double* HfSolver::spatial_atom(){
     
-    int max = INDEX(norb, norb);
+    int max = INDEX(norb - 1, norb - 1);
     double *moeri = new double[INDEX(max, max) + 1];
 
     for (int i = 0; i < INDEX(max, max); i++){
