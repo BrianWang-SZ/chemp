@@ -9,7 +9,7 @@
 #define DELTA_1 1e-12
 
 CCSolver::CCSolver(Molecule &m): 
-    HfSolver(m, false){
+    HfSolver(m, false), Fs(nso, nso){
 
     // convert from AO spatial to MO spatial
     moeri = spatial_atom();
@@ -102,8 +102,6 @@ void CCSolver::initialize_Fs(){
     Matrix Fp = isqrt_S.transpose() * F * isqrt_S;
     Eigen::SelfAdjointEigenSolver<Matrix> solver(Fp);
     Matrix evals = solver.eigenvalues();
-
-    Fs = Matrix::Zero(nso, nso);
 
     for (int p = 0; p < nso; p++){
         for (int q = 0; q < nso; q++){
