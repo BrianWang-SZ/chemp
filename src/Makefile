@@ -20,7 +20,7 @@ EnergySolver.o: EnergySolver.cpp
 	g++ -c EnergySolver.cpp
 
 Mp2Solver.o: Mp2Solver.cpp
-    g++ -c Mp2Solver.cpp
+	g++ -c Mp2Solver.cpp
 
 Helper.o: Helper.cpp
 	g++ -c Helper.cpp
