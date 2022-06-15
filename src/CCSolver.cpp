@@ -95,21 +95,12 @@ double CCSolver::compute(){
 }
 
 void CCSolver::initialize_Fs(){
-    // Matrix evals = get_eval();
-
-    // for (int p = 0; p < nso; p++){
-    //     for (int q = 0; q < nso; q++){
-    //         if (p == q) {
-    //             Fs(p, q) = evals(p/2);
-    //         }
-    //     }
-    // }
+    Matrix evals = get_eval();
 
     for (int p = 0; p < nso; p++){
         for (int q = 0; q < nso; q++){
-            Fs(p, q) = ham[p/2][q/2];
-            for (int m = 0; m < noso; m++){
-                Fs(p, q) += mospin[p][m][q][m];
+            if (p == q) {
+                Fs(p, q) = evals(p/2);
             }
         }
     }
@@ -135,7 +126,6 @@ void CCSolver::initialize_D(){
             D_ia[i][a] = Fs(i, i) - Fs(a, a);
         }
     }
-
 }
 
 void CCSolver::initialize_T(){
@@ -153,7 +143,6 @@ void CCSolver::initialize_T(){
         }
     }
 
-    // initialize t_ia to zeros
     t_ia = Helper::create2d(nso);
 }
 
