@@ -17,7 +17,7 @@ protected:
 
     double* spatial_atom();
     double**** spatial_to_spin(double *moeri);
-    Matrix HfSolver::get_eval();
+    Matrix get_eval();
 
 private:
     bool computed;
