@@ -118,8 +118,6 @@ void CCSolver::initialize_Fs(){
             }
         }
     }
-
-    Helper::print_matrix(Fs);
 }
 
 void CCSolver::initialize_D(){
@@ -142,6 +140,8 @@ void CCSolver::initialize_D(){
             D_ia[i][a] = Fs(i, i) - Fs(a, a);
         }
     }
+
+    Helper::print_matrix(D_ia, nso);
 }
 
 void CCSolver::initialize_T(){
