@@ -141,7 +141,6 @@ void CCSolver::initialize_D(){
         }
     }
 
-    Helper::print_matrix(D_ia, nso);
 }
 
 void CCSolver::initialize_T(){
@@ -161,6 +160,9 @@ void CCSolver::initialize_T(){
 
     // initialize t_ia to zeros
     t_ia = Helper::create2d(nso);
+
+
+    Helper::print_matrix(t_ia, nso);
 }
 
 void CCSolver::update_interm(Matrix &Fae, Matrix &Fmi, Matrix &Fme,
