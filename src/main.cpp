@@ -13,6 +13,6 @@ int main (int argc, char **argv){
     // gs.solve();
     // VibSolver vs(m);
     // vs.solve();
-    CCSolver ccs(m);
-    ccs.compute();
+    //CCSolver ccs(m);
+    //ccs.compute();
 }
