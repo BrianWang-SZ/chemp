@@ -111,7 +111,8 @@ void CCSolver::initialize_Fs(){
 
     Helper::print_matrix(Fcc);
 
-    Eigen::SelfAdjointEigenSolver<Matrix> solver(Fcc);
+    Matrix Fccp = isqrt_S.transpose() * Fcc * isqrt_S;
+    Eigen::SelfAdjointEigenSolver<Matrix> solver(Fccp);
     Matrix evals = solver.eigenvalues();
 
 
