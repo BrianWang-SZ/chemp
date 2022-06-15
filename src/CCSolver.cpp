@@ -10,7 +10,7 @@
 
 CCSolver::CCSolver(Molecule &m): 
     HfSolver(m, false), Fs(nso, nso){
-
+    Helper::print_matrix(F);
     // convert from AO spatial to MO spatial
     moeri = spatial_atom();
     // convert from MO spatial to MO spin
