@@ -16,11 +16,10 @@ CCSolver::CCSolver(Molecule &m):
 
     // convert from MO spatial to MO spin
     mospin = spatial_to_spin(moeri);
-    Helper::print_matrix(HfSolver::F);
+    Helper::print_matrix(mospin[0][3], norb);
     initialize_Fs();
     initialize_D();
     initialize_T();
-
 }
 
 CCSolver::~CCSolver(){

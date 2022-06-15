@@ -14,7 +14,7 @@ HfSolver::HfSolver(Molecule &m, bool toprint):
     F(norb, norb), isqrt_S(norb, norb){
     this -> toprint = toprint;
     computed = false;
-    compute();
+    if (!toprint) compute();
 }
 
 void HfSolver::compute_dipole(){
