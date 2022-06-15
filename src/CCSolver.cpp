@@ -22,6 +22,7 @@ CCSolver::CCSolver(Molecule &m):
     printf("here\n");
 
     initialize_Fs();
+    printf("here\n");
     initialize_D();
     initialize_T();
 
