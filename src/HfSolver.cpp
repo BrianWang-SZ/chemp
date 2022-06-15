@@ -13,10 +13,10 @@ HfSolver::HfSolver(Molecule &m, bool toprint):
     EnergySolver(m, false){
     this -> toprint = toprint;
     computed = false;
-    C = Matrix(norb, norb);
-    D = Matrix(norb, norb);
-    F = Matrix(norb, norb);
-    isqrt_S = Matrix(norb, norb);
+    this -> C = Matrix(norb, norb);
+    this -> D = Matrix(norb, norb);
+    this -> F = Matrix(norb, norb);
+    this -> isqrt_S = Matrix(norb, norb);
 }
 
 void HfSolver::compute_dipole(){
