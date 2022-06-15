@@ -109,6 +109,8 @@ double HfSolver::compute(){
         compute_dipole();
     }
 
+    Helper::print_matrix(F);
+
     computed = true;
 
     return E_curr;
