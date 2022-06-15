@@ -14,16 +14,12 @@ CCSolver::CCSolver(Molecule &m):
 
     // convert from AO spatial to MO spatial
     moeri = spatial_atom();
-    printf("here\n");
     // convert from MO spatial to MO spin
     mospin = spatial_to_spin(moeri);
-    printf("here\n");
+
     initialize_Fs();
-    printf("here\n");
     initialize_D();
-    printf("here\n");
     initialize_T();
-    printf("here\n");
 }
 
 CCSolver::~CCSolver(){
@@ -59,6 +55,7 @@ double CCSolver::calc_ccsd_energy(){
 }
 
 double CCSolver::compute(){
+    printf("here\n");
     double Escf = compute();
     printf("Escf = %20.12f\n", Escf + enuc);
     
