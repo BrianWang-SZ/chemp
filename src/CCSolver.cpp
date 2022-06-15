@@ -10,7 +10,6 @@
 
 CCSolver::CCSolver(Molecule &m): 
     HfSolver(m, false), Fs(nso, nso){
-    printf("here\n");
 
     // convert from AO spatial to MO spatial
     moeri = spatial_atom();
@@ -55,7 +54,6 @@ double CCSolver::calc_ccsd_energy(){
 }
 
 double CCSolver::compute(){
-    printf("here\n");
     double Escf = HfSolver::compute();
     printf("Escf = %20.12f\n", Escf + enuc);
     

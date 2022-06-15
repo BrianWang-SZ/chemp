@@ -1,5 +1,5 @@
-chemp: main.o Molecule.o GeomSolver.o VibSolver.o HfSolver.o CCSolver.o EnergySolver.o Helper.o
-	g++ main.o Molecule.o GeomSolver.o VibSolver.o HfSolver.o CCSolver.o EnergySolver.o Helper.o -o chemp
+chemp: main.o Molecule.o GeomSolver.o VibSolver.o HfSolver.o CCSolver.o EnergySolver.o Mp2Solver.o Helper.o
+	g++ main.o Molecule.o GeomSolver.o VibSolver.o HfSolver.o CCSolver.o EnergySolver.o Mp2Solver.o Helper.o -o chemp
 
 Molecule.o: Molecule.cpp
 	g++ -c Molecule.cpp
@@ -18,6 +18,9 @@ CCSolver.o: CCSolver.cpp
 
 EnergySolver.o: EnergySolver.cpp
 	g++ -c EnergySolver.cpp
+
+Mp2Solver.o: Mp2Solver.cpp
+    g++ -c Mp2Solver.cpp
 
 Helper.o: Helper.cpp
 	g++ -c Helper.cpp
