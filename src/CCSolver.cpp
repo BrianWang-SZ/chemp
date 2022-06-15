@@ -94,14 +94,22 @@ double CCSolver::compute(){
     return E_curr;
 }
 
-
 void CCSolver::initialize_Fs(){
-    Matrix evals = get_eval();
+    // Matrix evals = get_eval();
+
+    // for (int p = 0; p < nso; p++){
+    //     for (int q = 0; q < nso; q++){
+    //         if (p == q) {
+    //             Fs(p, q) = evals(p/2);
+    //         }
+    //     }
+    // }
 
     for (int p = 0; p < nso; p++){
         for (int q = 0; q < nso; q++){
-            if (p == q) {
-                Fs(p, q) = evals(p/2);
+            Fs(p, q) = ham[p/2][q/2];
+            for (int m = 0; m < noso; m++){
+                Fs(p, q) += mospin[p][m][q][m];
             }
         }
     }
