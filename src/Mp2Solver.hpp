@@ -12,4 +12,4 @@ private:
     double *moeri;
 }
 
-#endif /* MP2SOLVER_H
+#endif /* MP2SOLVER_H */
