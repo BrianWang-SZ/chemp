@@ -14,6 +14,7 @@ CCSolver::CCSolver(Molecule &m):
     printf("here\n");
     HfSolver::compute();
     printf("here\n, %f", HfSolver::compute());
+    Helper::print_matrix(F);
     // convert from AO spatial to MO spatial
     moeri = spatial_atom();
     printf("here\n");
