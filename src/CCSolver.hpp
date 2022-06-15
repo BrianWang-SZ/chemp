@@ -16,7 +16,6 @@ public:
 private:
     double **t_ia, **D_ia;
     double ****t_ijab, ****D_ijab;
-    Matrix Fs, C, D, F;
     
     void initialize_Fs();
     void initialize_D();
