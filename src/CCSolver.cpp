@@ -54,7 +54,7 @@ double CCSolver::calc_ccsd_energy(){
 }
 
 double CCSolver::compute(){
-    
+    printf("%f", calc_ccsd_energy());
     Matrix Fae = Matrix::Zero(nso, nso);
     Matrix Fmi = Matrix::Zero(nso, nso);
     Matrix Fme = Matrix::Zero(nso, nso);
