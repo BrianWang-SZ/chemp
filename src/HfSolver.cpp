@@ -110,9 +110,9 @@ double HfSolver::compute(){
 
             DIIS d();
             Matrix e = F * D * S - S * D * F;
-            d.DIIS::add(F, e);
+            d.add(F, e);
 
-            Matrix F_diis = d.DIIS::extrap();
+            Matrix F_diis = d.extrap();
             if (F_diis != NULL) F = F_diis;
         }
         /* DIIS optimization ends*/
