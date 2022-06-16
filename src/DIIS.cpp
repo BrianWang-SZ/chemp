@@ -26,14 +26,16 @@ void DIIS::shift(){
 }
 
 Matrix DIIS::extrap(){
-    
+    printf("here\n");
     Matrix B = build_B();
-    
+    printf("here\n");
     Eigen::VectorXd b(B.rows());
+    printf("here\n");
     b[B.rows() - 1] = -1;
     Eigen::VectorXd c = B.householderQr().solve(b);
-
+    printf("here\n");
     Matrix ext(mats[0].rows(), mats[0].cols());
+    printf("here\n");
 
     for (int i = 0; i < c.size() - 1; i++){
         ext += c[i] * mats[i];
