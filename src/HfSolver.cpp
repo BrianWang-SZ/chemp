@@ -110,9 +110,11 @@ double HfSolver::compute(){
             }
 
             DIIS d;
+            printf("here\n");
             Matrix e = F * D * S - S * D * F;
+            printf("here\n");
             d.add(F, e);
-
+            printf("here\n");
             F = d.extrap();
             printf("here\n");
         }
