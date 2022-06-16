@@ -1,4 +1,5 @@
 #include "DIIS.hpp"
+#include "type.h"
 
 #define MAXERR 8
 
