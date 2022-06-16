@@ -12,6 +12,7 @@ void DIIS::add(Matrix mat, Matrix e){
     if (count >= 8) shift();
     
     err[MAXERR - 1] = e;
+    e.resize(e.rows() * e.cols(), 1);
     mats[MAXERR - 1] = mat;
     
     count++;
@@ -47,9 +48,7 @@ Matrix DIIS::build_B(){
     Matrix B(size + 1, size + 1);
     for (int i = 0; i < size; i++){
         for (int j = 0; j <= i; j++){
-            VectorXd vi = Map<VectorXd> (err[i].data(), pow(err[i].size(), 2));
-            VectorXd vj = Map<VectorXd> (err[j].data(), pow(err[j].size(), 2));
-            B(i, j) = vi.dot(vj);
+            B(i, j) = err[i].transpose() * err[j];
             B(j, i) = B(i, j);  //symmetry
         }
     }
