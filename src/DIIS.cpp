@@ -11,7 +11,7 @@ void DIIS::add(Matrix mat, Matrix e){
     if (count >= 8) shift();
     e.resize(e.rows() * e.cols(), 1);
     err[MAXERR - 1] = e;
-    
+
     mats[MAXERR - 1] = mat;
     count++;
 }
@@ -33,7 +33,7 @@ Matrix DIIS::extrap(){
 
     Matrix ext(mats[0].rows(), mats[0].cols());
 
-    for (int i = 0; i < c.size() - 1){
+    for (int i = 0; i < c.size() - 1; i++){
         ext += c[i] * mats[i];
     }
 
