@@ -6,6 +6,7 @@
 class DIIS{
 
 public:
+    DIIS();
     void add(Matrix mat, Matrix e);
     Matrix extrap();
 
