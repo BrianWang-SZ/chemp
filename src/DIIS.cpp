@@ -49,7 +49,7 @@ Matrix DIIS::build_B(){
         }
     }
 
-    (int i = 0; i < size; i++){
+    for (int i = 0; i < size; i++){
         B(size, i) = -1;
         B(i, size) = -1;
     }
