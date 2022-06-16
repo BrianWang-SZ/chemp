@@ -22,7 +22,6 @@ void DIIS::shift(){
 }
 
 Matrix DIIS::extrap(){
-    if (count < 2) return NULL;
     
     Matrix B = build_B();
     

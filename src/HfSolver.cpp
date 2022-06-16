@@ -99,7 +99,7 @@ double HfSolver::compute(){
         }
 
         /* DIIS optimization starts*/
-        if(true){
+        if(count >= 2){
             Matrix S(norb, norb);
             
             for (int i = 0; i < norb; i++){
@@ -112,8 +112,7 @@ double HfSolver::compute(){
             Matrix e = F * D * S - S * D * F;
             d.add(F, e);
 
-            Matrix F_diis = d.extrap();
-            if (F_diis != NULL) F = F_diis;
+            F = d.extrap();
         }
         /* DIIS optimization ends*/
 
