@@ -100,6 +100,7 @@ double HfSolver::compute(){
 
         /* DIIS optimization starts*/
         if(count >= 2){
+            printf("here\n");
             Matrix S(norb, norb);
             
             for (int i = 0; i < norb; i++){
