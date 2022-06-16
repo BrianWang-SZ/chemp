@@ -9,7 +9,4 @@
 
 typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> Matrix;
 
-template <class T>;
-using Vec = std::vector<T>;
-using Vec2d = std::vector<>
 #endif /* TYPE_H */
