@@ -48,7 +48,7 @@ Matrix DIIS::build_B(){
     Matrix B(size + 1, size + 1);
     for (int i = 0; i < size; i++){
         for (int j = 0; j <= i; j++){
-            B(i, j) = err[i].transpose() * err[j][0];
+            B(i, j) = err[i].transpose() * err[j](0, 0);
             B(j, i) = B(i, j);  //symmetry
         }
     }
