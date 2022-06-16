@@ -46,6 +46,8 @@ Matrix DIIS::build_B(){
     for (int i = 0; i < size; i++){
         for (int j = 0; j <= i; j++){
             printf("here\n");
+            Helper::print_matrix(err[i]);
+            Helper::print_matrix(err[j]);
             B(i, j) = (err[i].transpose() * err[j])(0, 0);
             printf("here\n");
             B(j, i) = B(i, j);  //symmetry
