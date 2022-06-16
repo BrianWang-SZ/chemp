@@ -9,10 +9,10 @@ DIIS::DIIS():
 
 void DIIS::add(Matrix mat, Matrix e){
     if (count >= 8) shift();
-    e.resize(e.rows() * e.cols(), 1);
+    
     err[MAXERR - 1] = e;
-
     mats[MAXERR - 1] = mat;
+    
     count++;
 }
 
@@ -46,7 +46,7 @@ Matrix DIIS::build_B(){
     Matrix B(size + 1, size + 1);
     for (int i = 0; i < size; i++){
         for (int j = 0; j <= i; j++){
-            B(i, j) =  err[i].dot(err[j]);
+            B(i, j) =  (err[i].Array() * err[j].Array()).colwise().sum();
             B(j, i) = B(i, j);  //symmetry
         }
     }
