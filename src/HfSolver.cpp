@@ -108,7 +108,7 @@ double HfSolver::compute(){
                 }
             }
 
-            DIIS d();
+            DIIS d;
             Matrix e = F * D * S - S * D * F;
             d.add(F, e);
 
