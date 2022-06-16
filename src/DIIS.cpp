@@ -13,6 +13,7 @@ void DIIS::add(Matrix mat, Matrix e){
     if (count >= MAXERR) shift();
     
     err[MAXERR - 1] = e;
+    Helper::print_matrix(e);
     e.resize(e.rows() * e.cols(), 1);
     mats[MAXERR - 1] = mat;
     
