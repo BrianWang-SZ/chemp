@@ -10,7 +10,7 @@ DIIS::DIIS():
 void DIIS::add(Matrix mat, Matrix e){
     if (count >= 8) shift();
     err[MAXERR - 1] = e.resize(e.rows() * e.cols(), 1);
-    mats[MAXERR - 1] = mats;
+    mats[MAXERR - 1] = mat;
     count++;
 }
 
