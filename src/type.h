@@ -8,6 +8,8 @@
 #include <vector>
 
 typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> Matrix;
-typedef std::vector<double> Vector;
-typedef std::vector<std::vector<double>> Vec2d;
+
+template <class T>;
+using Vec = std::vector<T>;
+using Vec2d = std::vector<>
 #endif /* TYPE_H */

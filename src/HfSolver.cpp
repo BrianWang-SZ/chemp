@@ -2,6 +2,7 @@
 #include "Molecule.hpp"
 #include "Helper.hpp"
 #include "EnergySolver.hpp"
+#include "DIIS.hpp"
 
 #define MAXITER 100
 #define DELTA_1 1e-12
@@ -87,17 +88,37 @@ double HfSolver::compute(){
     }
 
     while (count < MAXITER && (abs(delta_E) >= DELTA_1 || rms >= DELTA_2)){
+
         E_prev = E_curr;
 
         updateFock();
-
-        Matrix new_D = Matrix::Zero(norb, norb);
-        updateDensity(new_D);
 
         if(toprint && count == 0){
             printf("\tFock Matrix:\n\n");
             Helper::print_matrix(F);
         }
+
+        /* DIIS optimization starts*/
+        if(true){
+            Matrix S(norb, norb);
+            
+            for (int i = 0; i < norb; i++){
+                for (int j = 0; j < norb; j++){
+                    S(i, j) = s[i][j];
+                }
+            }
+
+            DIIS d();
+            Matrix e = F * D * S - S * D * F;
+            d.add(F, e);
+
+            Matrix F_diis = d.extrap();
+            if (F_diis != NULL) F = F_diis;
+        }
+        /* DIIS optimization ends*/
+
+        Matrix new_D(norb, norb);
+        updateDensity(new_D);
 
         rms = Helper::calc_rms(D, new_D);
         
@@ -125,7 +146,7 @@ double HfSolver::compute(){
 
 void HfSolver::initialize(){
 
-    // initialize S^(-1/2) matrix
+    // initialize S matrix
     Matrix S(norb, norb);
 
     for (int i = 0; i < norb; i++){
