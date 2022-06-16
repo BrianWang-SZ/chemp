@@ -17,7 +17,7 @@ void DIIS::add(Matrix mat, Matrix e){
 void DIIS::shift(){
     for (int i = 0; i < MAXERR - 1; i++){
         err[i] = err[i + 1];
-        mat[i] = mat[i + 1];
+        mats[i] = mats[i + 1];
     }
 }
 
@@ -29,10 +29,10 @@ Matrix DIIS::extrap(){
     b(max) = -1;
     Eigen::VectorXd c = B.householderQr().solve(b);
 
-    Matrix ext(mat.rows(), mat.cols());
+    Matrix ext(mats[0].rows(), mats[0].cols());
 
     for (int i = 0; i < c.size() - 1){
-        ext += c[i] * mat[i];
+        ext += c[i] * mats[i];
     }
 
     return ext;
@@ -42,8 +42,8 @@ Matrix DIIS::extrap(){
 Matrix DIIS::build_B(){
     int size = (count > MAXERR) ? MAXERR : count;
     Matrix B(size + 1, size + 1);
-    for (int i < 0; i < size; i++){
-        for (int j < 0; j <= i; j++){
+    for (int i = 0; i < size; i++){
+        for (int j = 0; j <= i; j++){
             Matrix ei = err[i].resize(err[i].rows() * err[i].cols(), 1);
             Matrix ej = err[j].resize(err[j].rows() * err[j].cols(), 1);
             B(i, j) =  Eigen::dot(ei, ej) ;
