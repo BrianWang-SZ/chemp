@@ -317,10 +317,9 @@ void CCSolver::updateT(Matrix Fae, Matrix Fmi, Matrix Fme,
                     tmp2d[i][a] -= t_ia[n][f] * mospin[n][a][i][f];
                 }
             }
-            t_ia[i][a] = tmp2d[i][a] / D_ia[i][a];
         }   
     }
-    Helper::free2d(tmp2d, nso);
+    
 
     // update T2 matrix (Equation 2)
     double ****tmp4d = Helper::create4d(nso);
@@ -376,8 +375,25 @@ void CCSolver::updateT(Matrix Fae, Matrix Fmi, Matrix Fme,
                             tmp4d[i][j][a][b] += tau(m, n, a, b) * Wmnij[m][n][i][j] / 2;
                         }
                     }
-                    t_ijab[i][j][a][b] = tmp4d[i][j][a][b] / D_ijab[i][j][a][b];
                 } 
+            }
+        }
+    }
+
+
+    for (int i = 0; i < noso; i++){
+        for (int a = noso; a < nso; a++){
+            t_ia[i][a] = tmp2d[i][a] / D_ia[i][a];
+        }
+    }
+    Helper::free2d(tmp2d, nso);
+
+    for (int i = 0; i < noso; i++){
+        for (int j = 0; j < noso; j++){
+            for (int a = noso; a < nso; a++){
+                for (int b = noso; b < nso; b++){
+                    t_ijab[i][j][a][b] = tmp4d[i][j][a][b] / D_ijab[i][j][a][b];
+                }
             }
         }
     }
