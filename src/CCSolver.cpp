@@ -63,6 +63,7 @@ double CCSolver::compute(){
     double ****Wmbej = Helper::create4d(nso);
     
     double E_curr = calc_ccsd_energy();
+    printf("%20.12f\n", E_curr);
     double E_prev = 0.0;
     double delta_E = E_prev - E_curr;
 
