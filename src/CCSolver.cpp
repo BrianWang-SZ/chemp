@@ -380,7 +380,6 @@ void CCSolver::updateT(Matrix Fae, Matrix Fmi, Matrix Fme,
         }
     }
 
-
     for (int i = 0; i < noso; i++){
         for (int a = noso; a < nso; a++){
             t_ia[i][a] = tmp2d[i][a] / D_ia[i][a];
