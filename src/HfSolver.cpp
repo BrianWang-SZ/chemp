@@ -123,7 +123,7 @@ double HfSolver::compute(){
             D = new_D;
             E_curr = calc_hf_energy();
             delta_E = E_curr - E_prev;
-            F = old_F;
+            F = F_old;
         }
         
         /* DIIS optimization ends*/
