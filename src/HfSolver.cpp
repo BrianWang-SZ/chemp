@@ -98,24 +98,24 @@ double HfSolver::compute(){
             Helper::print_matrix(F);
         }
 
-        /* DIIS optimization starts*/
-        if(count >= 2){
+        // /* DIIS optimization starts*/
+        // if(count >= 2){
             
-            Matrix S(norb, norb);
+        //     Matrix S(norb, norb);
             
-            for (int i = 0; i < norb; i++){
-                for (int j = 0; j < norb; j++){
-                    S(i, j) = s[i][j];
-                }
-            }
+        //     for (int i = 0; i < norb; i++){
+        //         for (int j = 0; j < norb; j++){
+        //             S(i, j) = s[i][j];
+        //         }
+        //     }
 
-            DIIS d;
-            Matrix e = F * D * S - S * D * F;
-            d.add(F, e);
-            F = d.extrap();
-        }
+        //     DIIS d;
+        //     Matrix e = F * D * S - S * D * F;
+        //     d.add(F, e);
+        //     F = d.extrap();
+        // }
         
-        /* DIIS optimization ends*/
+        // /* DIIS optimization ends*/
 
         Matrix new_D(norb, norb);
         updateDensity(new_D);
