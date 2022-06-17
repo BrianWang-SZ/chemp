@@ -6,7 +6,6 @@
 Mp2Solver::Mp2Solver(Molecule &m):
     HfSolver(m, false){
     moeri = spatial_atom();
-    toprint = true;
 }
 
 Mp2Solver::~Mp2Solver(){
