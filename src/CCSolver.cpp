@@ -162,7 +162,11 @@ void CCSolver::update_interm(Matrix &Fae, Matrix &Fmi, Matrix &Fme,
                 for (int f = noso; f < nso; f++){
                     // Term 3
                     Fae(a, e) += t_ai[f][m] * mospin[m][a][f][e];
-                    
+                }
+            }
+
+            for (int m = 0; m < noso; m++){
+                for (int f = noso; f < nso; f++){
                     for (int n = 0; n < noso; n++){
                         // Term 4
                         Fae(a, e) -= taut(a, f, m, n) * mospin[m][n][e][f] / 2;
@@ -347,8 +351,6 @@ void CCSolver::updateT(Matrix Fae, Matrix Fmi, Matrix Fme,
                         // Term 3.1
                         tmp4d[a][b][i][j] -= t_abij[a][b][i][m] * Fmi(m, j) - 
                                              t_abij[a][b][j][m] * Fmi(m, i);
-                        
-                        
                         
                         for (int e = noso; e < nso; e++){
                             // Term 3.2
