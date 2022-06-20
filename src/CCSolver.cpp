@@ -333,15 +333,15 @@ void CCSolver::updateT(Matrix Fae, Matrix Fmi, Matrix Fme,
                     tmp4d[a][b][i][j] = mospin[i][j][a][b];
                     for (int e = noso; e < nso; e++){
                         // Term 2.1
-                        tmp4d[a][b][i][j] += t_abij[a][e][i][j] * Fae(b, e) - 
-                                             t_abij[b][e][i][j] * Fae(a, e);
+                        // tmp4d[a][b][i][j] += t_abij[a][e][i][j] * Fae(b, e) - 
+                        //                      t_abij[b][e][i][j] * Fae(a, e);
                         // Term 7
                         tmp4d[a][b][i][j] += t_ai[e][i] * mospin[a][b][e][j] - 
                                              t_ai[e][j] * mospin[a][b][e][i];
                         for (int m = 0; m < noso; m++){
                             // Term 2.2
-                            tmp4d[a][b][i][j] -= (t_abij[a][e][i][j] * t_ai[b][m] * Fme(m, e) - 
-                                                  t_abij[b][e][i][j] * t_ai[a][m] * Fme(m, e)) / 2;
+                            // tmp4d[a][b][i][j] -= (t_abij[a][e][i][j] * t_ai[b][m] * Fme(m, e) - 
+                            //                       t_abij[b][e][i][j] * t_ai[a][m] * Fme(m, e)) / 2;
                         }
 
                         for (int f = noso; f < nso; f++){
