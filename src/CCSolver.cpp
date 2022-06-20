@@ -295,7 +295,7 @@ void CCSolver::updateT(Matrix Fae, Matrix Fmi, Matrix Fme,
             
             for (int m = 0; m < noso; m++){
                 // Term 3
-                // tmp2d[a][i] += t_ai[a][m] * Fmi(m, i);
+                tmp2d[a][i] += t_ai[a][m] * Fmi(m, i);
                 for (int e = noso; e < nso; e++){
                     // Term 4
                     tmp2d[a][i] += t_abij[a][e][i][m] * Fme(m, e);
@@ -315,7 +315,7 @@ void CCSolver::updateT(Matrix Fae, Matrix Fmi, Matrix Fme,
             for (int n = 0; n < noso; n++){
                 for (int f = noso; f < nso; f++){
                     // Term 5
-                    tmp2d[a][i] -= t_ai[f][n] * mospin[n][a][i][f];
+                    // tmp2d[a][i] -= t_ai[f][n] * mospin[n][a][i][f];
                 }
             }
         }   
