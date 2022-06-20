@@ -363,7 +363,6 @@ void CCSolver::updateT(Matrix Fae, Matrix Fmi, Matrix Fme,
             }
         }
     }
-    
 
     // update T2 matrix (Equation 2)
     double ****tmp4d = Helper::create4d(nso);
