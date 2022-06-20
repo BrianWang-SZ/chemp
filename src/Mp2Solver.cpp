@@ -1,7 +1,7 @@
 #include "HfSolver.hpp"
 #include "Mp2Solver.hpp"
 
-#define INDEX(i,j) ((i>j) ? (((ioff[i])+(j)) : ((ioff[j])+(i))))
+#define INDEX(i,j) ((i>j) ? ((ioff[i])+(j)) : ((ioff[j])+(i)))
 
 Mp2Solver::Mp2Solver(Molecule &m):
     HfSolver(m, false){

@@ -5,7 +5,7 @@
 #include <algorithm>
 
 #define MAXORB 100
-#define INDEX(i,j) ((i>j) ? (((ioff[i])+(j)) : ((ioff[j])+(i))))
+#define INDEX(i,j) ((i>j) ? ((ioff[i])+(j)) : ((ioff[j])+(i)))
 
 EnergySolver::EnergySolver(Molecule &m, bool toprint){
     this -> toprint = toprint;

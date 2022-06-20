@@ -4,7 +4,7 @@
 #include "HfSolver.hpp"
 #include "Molecule.hpp"
 
-#define INDEX(i,j) ((i>j) ? (((ioff[i])+(j)) : ((ioff[j])+(i))))
+#define INDEX(i,j) ((i>j) ? ((ioff[i])+(j)) : ((ioff[j])+(i)))
 #define MAXITER 100
 #define DELTA_1 1e-12
 
