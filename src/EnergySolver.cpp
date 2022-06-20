@@ -5,7 +5,7 @@
 #include <algorithm>
 
 #define MAXORB 100
-#define INDEX(i,j) (i>j) ? (ioff[i]+j) : (ioff[j]+i)
+#define INDEX((i,j) (i>j) ? (((ioff[i])+(j)) : ((ioff[j])+(i))))
 
 EnergySolver::EnergySolver(Molecule &m, bool toprint){
     this -> toprint = toprint;
@@ -199,7 +199,7 @@ void EnergySolver::hamiltonian(){
 
 // lookup array
 void EnergySolver::lookupTable(){
-    int* ioff = new int[MAXORB];
+    int *ioff = new int[MAXORB];
 
     ioff[0] = 0;
 

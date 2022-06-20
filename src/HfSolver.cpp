@@ -8,7 +8,7 @@
 #define DELTA_1 1e-12
 #define DELTA_2 1e-11
 
-#define INDEX(i,j) (i>j) ? (ioff[i]+j) : (ioff[j]+i)
+#define INDEX((i,j) (i>j) ? (((ioff[i])+(j)) : ((ioff[j])+(i))))
 
 HfSolver::HfSolver(Molecule &m, bool toprint):
     EnergySolver(m, false), C(norb, norb), D(norb, norb),
