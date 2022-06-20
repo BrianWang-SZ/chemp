@@ -8,7 +8,7 @@
 #define DELTA_1 1e-12
 #define DELTA_2 1e-11
 
-#define INDEX(i, j) ((i>j) ? (((i)*((i)+1)/2)+(j)) : (((j)*((j)+1)/2)+(i)))
+#define INDEX(i,j) (i>j) ? (ioff[i]+j) : (ioff[j]+i)
 
 HfSolver::HfSolver(Molecule &m, bool toprint):
     EnergySolver(m, false), C(norb, norb), D(norb, norb),
@@ -126,8 +126,6 @@ double HfSolver::compute(){
         E_curr = calc_hf_energy();
         delta_E = E_curr - E_prev;
 
-        
-
         count++;
         if(toprint){
             printf("%02d%21.12f%21.12f%21.12f%21.12f\n", count, E_curr, 
@@ -139,7 +137,6 @@ double HfSolver::compute(){
         Helper::print_matrix(D);
         compute_dipole();
     }
-
 
     computed = true;
 
