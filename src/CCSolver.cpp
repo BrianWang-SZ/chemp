@@ -187,6 +187,11 @@ void CCSolver::update_interm(Matrix &Fae, Matrix &Fmi, Matrix &Fme,
                 for (int n = 0; n < noso; n++){
                     // Term 3
                     Fmi(m, i) += t_ai[e][n] * mospin[m][n][i][e];    
+                }
+            }
+
+            for (int n = 0; n < noso; n++){
+                for (int e = noso; e < nso; e++){
                     for (int f = noso; f < nso; f++){
                         // Term 4
                         Fmi(m, i) += taut(e, f, i, n) * mospin[m][n][e][f] / 2;
