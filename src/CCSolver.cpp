@@ -315,7 +315,7 @@ void CCSolver::updateT(Matrix Fae, Matrix Fmi, Matrix Fme,
             for (int n = 0; n < noso; n++){
                 for (int f = noso; f < nso; f++){
                     // Term 5
-                    // tmp2d[a][i] -= t_ai[f][n] * mospin[n][a][i][f];
+                    tmp2d[a][i] -= t_ai[f][n] * mospin[n][a][i][f];
                 }
             }
         }   
@@ -331,22 +331,15 @@ void CCSolver::updateT(Matrix Fae, Matrix Fmi, Matrix Fme,
                 for (int b = noso; b < nso; b++){
                     // Term 1
                     tmp4d[a][b][i][j] = mospin[i][j][a][b];
+
                     for (int e = noso; e < nso; e++){
                         //Term 2.1
                         tmp4d[a][b][i][j] += t_abij[a][e][i][j] * Fae(b, e) - 
                                              t_abij[b][e][i][j] * Fae(a, e);
-                        // Term 7
-                        tmp4d[a][b][i][j] += t_ai[e][i] * mospin[a][b][e][j] - 
-                                             t_ai[e][j] * mospin[a][b][e][i];
                         for (int m = 0; m < noso; m++){
                             // Term 2.2
                             tmp4d[a][b][i][j] -= (t_abij[a][e][i][j] * t_ai[b][m] * Fme(m, e) - 
                                                   t_abij[b][e][i][j] * t_ai[a][m] * Fme(m, e)) / 2;
-                        }
-
-                        for (int f = noso; f < nso; f++){
-                            // Term 5
-                            tmp4d[a][b][i][j] += tau(e, f, i, j) * Wabef[a][b][e][f] / 2;
                         }
                     }
 
@@ -355,26 +348,51 @@ void CCSolver::updateT(Matrix Fae, Matrix Fmi, Matrix Fme,
                         tmp4d[a][b][i][j] -= t_abij[a][b][i][m] * Fmi(m, j) - 
                                              t_abij[a][b][j][m] * Fmi(m, i);
                         
-                        // Term 8
-                        tmp4d[a][b][i][j] -= t_ai[a][m] * mospin[m][b][i][j] - 
-                                             t_ai[b][m] * mospin[m][a][i][j];
+                        
                         
                         for (int e = noso; e < nso; e++){
                             // Term 3.2
                             tmp4d[a][b][i][j] -= (t_abij[a][b][i][m] * t_ai[e][j] * Fme(m, e) -
                                                   t_abij[a][b][j][m] * t_ai[e][i] * Fme(m, e)) / 2;
+                        }
 
-                            // Term 6 
+                        
+                    }
+
+                    for (int m = 0; m < noso; m++){
+                        for (int n = 0; n < noso; n++){
+                            // Term 4
+                            tmp4d[a][b][i][j] += tau(a, b, m, n) * Wmnij[m][n][i][j] / 2;
+                        }
+                    }
+
+                    for (int e = noso; e < nso; e++){
+                        for (int f = noso; f < nso; f++){
+                            // Term 5
+                            tmp4d[a][b][i][j] += tau(e, f, i, j) * Wabef[a][b][e][f] / 2;
+                        }
+                    }
+
+                    // Term 6 
+                    for (int m = 0; m < noso; m++){
+                        for (int e = noso; e < nso; e++){
                             tmp4d[a][b][i][j] += t_abij[a][e][i][m] * Wmbej[m][b][e][j] - t_ai[e][i] * t_ai[a][m] * mospin[m][b][e][j];
                             tmp4d[a][b][i][j] -= t_abij[a][e][j][m] * Wmbej[m][b][e][i] - t_ai[e][j] * t_ai[a][m] * mospin[m][b][e][i];
                             tmp4d[a][b][i][j] -= t_abij[b][e][i][m] * Wmbej[m][a][e][j] - t_ai[e][i] * t_ai[b][m] * mospin[m][a][e][j];
                             tmp4d[a][b][i][j] += t_abij[b][e][j][m] * Wmbej[m][a][e][i] - t_ai[e][j] * t_ai[b][m] * mospin[m][a][e][i];
                         }
+                    }
 
-                        for (int n = 0; n < noso; n++){
-                            // Term 4
-                            tmp4d[a][b][i][j] += tau(a, b, m, n) * Wmnij[m][n][i][j] / 2;
-                        }
+                    // Term 7
+                    for (int e = noso; e < nso; e++){
+                        tmp4d[a][b][i][j] += t_ai[e][i] * mospin[a][b][e][j] - 
+                                             t_ai[e][j] * mospin[a][b][e][i];
+                    }
+
+                    // Term 8
+                    for (int m = 0; m < noso; m++){
+                        tmp4d[a][b][i][j] -= t_ai[a][m] * mospin[m][b][i][j] - 
+                                             t_ai[b][m] * mospin[m][a][i][j];
                     }
                 } 
             }
