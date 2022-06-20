@@ -332,7 +332,7 @@ void CCSolver::updateT(Matrix Fae, Matrix Fmi, Matrix Fme,
                     // Term 1
                     tmp4d[a][b][i][j] = mospin[i][j][a][b];
                     for (int e = noso; e < nso; e++){
-                        Term 2.1
+                        //Term 2.1
                         tmp4d[a][b][i][j] += t_abij[a][e][i][j] * Fae(b, e) - 
                                              t_abij[b][e][i][j] * Fae(a, e);
                         // Term 7
