@@ -5,7 +5,7 @@
 #include "Molecule.hpp"
 
 #define INDEX(i, j) ((i>j) ? (((i)*((i)+1)/2)+(j)) : (((j)*((j)+1)/2)+(i)))
-#define MAXITER 100
+#define MAXITER 2
 #define DELTA_1 1e-12
 
 CCSolver::CCSolver(Molecule &m): 
