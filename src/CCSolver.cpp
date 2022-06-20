@@ -25,10 +25,10 @@ CCSolver::~CCSolver(){
     delete[] moeri;
     Helper::free4d(mospin, nso);
     
-    Helper::free2d(t_ia, nso);
-    Helper::free4d(t_ijab, nso);
-    Helper::free2d(D_ia, nso);
-    Helper::free4d(D_ijab, nso);
+    Helper::free2d(t_ai, nso);
+    Helper::free4d(t_abij, nso);
+    Helper::free2d(D_ai, nso);
+    Helper::free4d(D_abij, nso);
 }
 
 double CCSolver::calc_ccsd_energy(){
@@ -36,7 +36,7 @@ double CCSolver::calc_ccsd_energy(){
     
     for (int i = 0; i < noso; i++){
         for (int a = noso; a < nso; a++){
-            energy += Fs(i, a) * t_ia[i][a];
+            energy += Fs(i, a) * t_ai[a][i];
         }
     }
 
@@ -44,8 +44,8 @@ double CCSolver::calc_ccsd_energy(){
         for (int j = 0; j < noso; j++){
             for (int a = noso; a < nso; a++){
                 for (int b = noso; b < nso; b++){
-                    energy += mospin[i][j][a][b] * t_ijab[i][j][a][b] / 4;
-                    energy += mospin[i][j][a][b] * t_ia[i][a] * t_ia[j][b] / 2;
+                    energy += mospin[i][j][a][b] * t_abij[a][b][i][j] / 4;
+                    energy += mospin[i][j][a][b] * t_ai[a][i] * t_ai[b][j] / 2;
                 }
             }
         }
