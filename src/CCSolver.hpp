@@ -15,16 +15,16 @@ private:
     double *moeri;
     double ****mospin;
     
-    double **t_ai, **D_ai;
-    double ****t_abij, ****D_abij;
+    double **t_ia, **D_ia;
+    double ****t_ijab, ****D_ijab;
     Matrix Fs;
     
     void initialize_Fs();
     void initialize_D();
     void initialize_T();
 
-    double tau(int a, int b, int i, int j);
-    double taut(int a, int b, int i, int j);
+    double tau(int i, int j, int a, int b);
+    double taut(int i, int j, int a, int b);
     
     double calc_ccsd_energy();
     
