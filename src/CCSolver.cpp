@@ -340,8 +340,8 @@ void CCSolver::updateT(Matrix Fae, Matrix Fmi, Matrix Fme,
                                              t_ai[e][j] * mospin[a][b][e][i];
                         for (int m = 0; m < noso; m++){
                             // Term 2.2
-                            // tmp4d[a][b][i][j] -= (t_abij[a][e][i][j] * t_ai[b][m] * Fme(m, e) - 
-                            //                       t_abij[b][e][i][j] * t_ai[a][m] * Fme(m, e)) / 2;
+                            tmp4d[a][b][i][j] -= (t_abij[a][e][i][j] * t_ai[b][m] * Fme(m, e) - 
+                                                  t_abij[b][e][i][j] * t_ai[a][m] * Fme(m, e)) / 2;
                         }
 
                         for (int f = noso; f < nso; f++){
@@ -361,8 +361,8 @@ void CCSolver::updateT(Matrix Fae, Matrix Fmi, Matrix Fme,
                         
                         for (int e = noso; e < nso; e++){
                             // Term 3.2
-                            tmp4d[a][b][i][j] -= (t_abij[a][b][i][m] * t_ai[e][j] * Fme(m, e) -
-                                                  t_abij[a][b][j][m] * t_ai[e][i] * Fme(m, e)) / 2;
+                            // tmp4d[a][b][i][j] -= (t_abij[a][b][i][m] * t_ai[e][j] * Fme(m, e) -
+                            //                       t_abij[a][b][j][m] * t_ai[e][i] * Fme(m, e)) / 2;
 
                             // Term 6 
                             tmp4d[a][b][i][j] += t_abij[a][e][i][m] * Wmbej[m][b][e][j] - t_ai[e][i] * t_ai[a][m] * mospin[m][b][e][j];
