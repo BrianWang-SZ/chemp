@@ -199,7 +199,7 @@ void EnergySolver::hamiltonian(){
 
 // lookup array
 void EnergySolver::lookupTable(){
-    int *ioff = new int[MAXORB];
+    int *ioff = new int[1000];
 
     ioff[0] = 0;
 
