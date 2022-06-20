@@ -55,7 +55,7 @@ void EnergySolver::read_two_electron(){
 
     double *eri = new double[ijkl + 1];
 
-    for(int i = 0; i < ijkl; i++){
+    for(int i = 0; i <= ijkl; i++){
         eri[i] = 0.0;
     }
 

@@ -249,7 +249,7 @@ void HfSolver::updateDensity(Matrix &new_D){
 
 double* HfSolver::spatial_atom(){
     
-    int max = INDEX(norb, norb);
+    int max = INDEX(norb - 1, norb - 1);
     double *moeri = new double[INDEX(max, max) + 1];
 
     for (int i = 0; i < INDEX(max, max); i++){
