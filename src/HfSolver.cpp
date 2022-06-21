@@ -91,37 +91,44 @@ double HfSolver::compute(){
 
         E_prev = E_curr;
 
+        Matrix S(norb, norb);
+
+        for (int i = 0; i < norb; i++){
+            for (int j = 0; j < norb; j++){
+                S(i, j) = s[i][j];
+            }
+        }
+
+        DIIS d;
+        Matrix new_D(norb, norb);
+
         /* DIIS optimization starts*/
         if(count >= 2){
-            
-            Matrix S(norb, norb);
-            
-            for (int i = 0; i < norb; i++){
-                for (int j = 0; j < norb; j++){
-                    S(i, j) = s[i][j];
-                }
-            }
-
-            DIIS d;
+            F = d.extrap();
+            updateDensity(new_D);
+            updateFock();
             Matrix e = F * D * S - S * D * F;
             d.add(F, e);
-            F = d.extrap();
+            
         } else {
             updateFock();
+            
+            if(toprint && count == 0){
+                printf("\tFock Matrix:\n\n");
+                Helper::print_matrix(F);
+            }
+
+            Matrix e = F * D * S - S * D * F;
+            d.add(F, e);
+
+            Matrix new_D(norb, norb);
+            updateDensity(new_D);
         }
         /* DIIS optimization ends*/
 
-        if(toprint && count == 0){
-            printf("\tFock Matrix:\n\n");
-            Helper::print_matrix(F);
-        }
-
-        Matrix new_D(norb, norb);
-        updateDensity(new_D);
         rms = Helper::calc_rms(D, new_D);
-        D = new_D;      
-        
-        E_curr = calc_hf_energy();  
+        D = new_D;
+        E_curr = calc_hf_energy();
         delta_E = E_curr - E_prev;
 
         count++;
