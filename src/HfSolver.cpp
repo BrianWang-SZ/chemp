@@ -120,8 +120,6 @@ double HfSolver::compute(){
 
             Matrix e = F * D * S - S * D * F;
             d.add(F, e);
-
-            Matrix new_D(norb, norb);
             updateDensity(new_D);
         }
         /* DIIS optimization ends*/
