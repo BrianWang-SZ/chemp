@@ -117,7 +117,7 @@ double HfSolver::compute(){
                 printf("\tFock Matrix:\n\n");
                 Helper::print_matrix(F);
             }
-
+            
             Matrix e = F * D * S - S * D * F;
             d.add(F, e);
             updateDensity(new_D);
