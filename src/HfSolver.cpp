@@ -105,9 +105,13 @@ double HfSolver::compute(){
         /* DIIS optimization starts*/
         if(count >= 2){
             F = d.extrap();
+            printf("here\n");
             updateDensity(new_D);
+            printf("here\n");
             updateFock();
+            printf("here\n");
             Matrix e = F * D * S - S * D * F;
+            printf("here\n");
             d.add(F, e);
             
         } else {
