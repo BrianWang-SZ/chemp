@@ -11,6 +11,8 @@ DIIS::DIIS():
 
 void DIIS::add(Matrix mat, Matrix e){
     
+
+    printf("here\n");
     e.resize(e.rows() * e.cols(), 1);
     
     if (count >= MAXERR) {
@@ -42,8 +44,6 @@ Matrix DIIS::extrap(){
     for (int i = 0; i < c.size() - 1; i++){
         ext += c[i] * mats[i];
     }
-
-    printf("here\n");
     return ext;
 }
 
