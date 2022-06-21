@@ -233,7 +233,7 @@ void HfSolver::updateDensity(Matrix &new_D){
     
     printf("here\n");
     Matrix Fp = isqrt_S.transpose() * F * isqrt_S;
-    printf("row F %d, col F %d", F.rows(), F.cols());
+    printf("row F %ld, col F %ld", F.rows(), F.cols());
     printf("here\n");
 
     Eigen::SelfAdjointEigenSolver<Matrix> solver(Fp);
