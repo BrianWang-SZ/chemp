@@ -39,7 +39,8 @@ Matrix DIIS::extrap(){
     Eigen::VectorXd b(B.cols());
     b[B.cols() - 1] = -1;
     Eigen::VectorXd c = B.householderQr().solve(b);
-    Matrix ext(norb, norb);
+    printf("row %ld, col %ld", mats[0].rows(), mats[0].cols());
+    Matrix ext(mats[0].rows(), mats[0].cols());
 
     for (int i = 0; i < c.size() - 1; i++){
         ext += c[i] * mats[i];
