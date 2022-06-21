@@ -39,12 +39,12 @@ Matrix DIIS::extrap(){
     Eigen::VectorXd c = B.householderQr().solve(b);
     Matrix ext(mats[0].rows(), mats[0].cols());
 
+    printf("here\n");
+
     for (int i = 0; i < c.size() - 1; i++){
         ext += c[i] * mats[i];
     }
-
     return ext;
-
 }
 
 Matrix DIIS::build_B(){
