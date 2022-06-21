@@ -9,7 +9,7 @@ DIIS::DIIS():
     count = 0;
 }
 
-void DIIS::add(Matrix mat, Matrix e){
+void DIIS::add(Matrix &mat, Matrix &e){
     
 
 
