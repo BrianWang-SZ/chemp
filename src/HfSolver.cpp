@@ -91,13 +91,6 @@ double HfSolver::compute(){
 
         E_prev = E_curr;
 
-        updateFock();
-
-        if(toprint && count == 0){
-            printf("\tFock Matrix:\n\n");
-            Helper::print_matrix(F);
-        }
-
         /* DIIS optimization starts*/
         if(count >= 2){
             
@@ -113,14 +106,20 @@ double HfSolver::compute(){
             Matrix e = F * D * S - S * D * F;
             d.add(F, e);
             F = d.extrap();
+        } else {
+            updateFock();
+        }
+        /* DIIS optimization ends*/
+
+        if(toprint && count == 0){
+            printf("\tFock Matrix:\n\n");
+            Helper::print_matrix(F);
         }
 
         Matrix new_D(norb, norb);
         updateDensity(new_D);
         rms = Helper::calc_rms(D, new_D);
-        D = new_D;       
-        
-        /* DIIS optimization ends*/
+        D = new_D;      
         
         E_curr = calc_hf_energy();  
         delta_E = E_curr - E_prev;
