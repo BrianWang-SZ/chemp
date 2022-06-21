@@ -34,8 +34,8 @@ void DIIS::shift(){
 
 Matrix DIIS::extrap(){
     Matrix B = build_B();
-    Eigen::VectorXd b(B.rows());
-    b[B.rows() - 1] = -1;
+    Eigen::VectorXd b(B.cols());
+    b[B.cols() - 1] = -1;
     Eigen::VectorXd c = B.householderQr().solve(b);
     Matrix ext(mats[0].rows(), mats[0].cols());
 

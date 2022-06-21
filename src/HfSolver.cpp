@@ -113,18 +113,12 @@ double HfSolver::compute(){
             Matrix e = F * D * S - S * D * F;
             d.add(F, e);
             F = d.extrap();
-            
-            Matrix new_D(norb, norb);
-            updateDensity(new_D);
-            rms = Helper::calc_rms(D, new_D);
-            D = new_D;
-
-        } else {
-            Matrix new_D(norb, norb);
-            updateDensity(new_D);
-            rms = Helper::calc_rms(D, new_D);
-            D = new_D;       
         }
+
+        Matrix new_D(norb, norb);
+        updateDensity(new_D);
+        rms = Helper::calc_rms(D, new_D);
+        D = new_D;       
         
         /* DIIS optimization ends*/
         
