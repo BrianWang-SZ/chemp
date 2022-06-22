@@ -5,8 +5,8 @@
 #define MAXERR 8
 
 DIIS::DIIS(){
-    err = new Matrix[MAXERR];
-    mats = new Matrix[MAXERR];
+    err = new Matrix&[MAXERR];
+    mats = new Matrix&[MAXERR];
     count = 0;
 }
 
