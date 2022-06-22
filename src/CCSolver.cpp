@@ -105,6 +105,8 @@ void CCSolver::initialize_Fs(){
             }
         }
     }
+    Helper::print_matrix(evals);
+    Helper::print_matrix(Fs);
 }
 
 void CCSolver::initialize_D(){
