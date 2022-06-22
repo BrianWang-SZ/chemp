@@ -4,8 +4,9 @@
 
 #define MAXERR 8
 
-DIIS::DIIS():
-    err(MAXERR), mats(MAXERR){
+DIIS::DIIS(){
+    err = new Matrix[MAXERR];
+    mats = new Matrix[MAXERR];
     count = 0;
 }
 

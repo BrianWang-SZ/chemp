@@ -12,8 +12,8 @@ public:
 
 private:
     int count;
-    std::vector<Matrix> err;
-    std::vector<Matrix> mats;
+    Matrix *err;
+    Matrix *mats;
     Matrix build_B();
     void shift();
     
