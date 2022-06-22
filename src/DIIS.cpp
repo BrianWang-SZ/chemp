@@ -10,17 +10,17 @@ DIIS::DIIS(){
     count = 0;
 }
 
-void DIIS::add(Matrix &mat, Matrix &e){
+void DIIS::add(Matrix *mat, Matrix *e){
 
     e.resize(e.rows() * e.cols(), 1);
     
     if (count >= MAXERR) {
         shift();
-        err[MAXERR - 1] = &e;
-        mats[MAXERR - 1] = &mat;
+        err[MAXERR - 1] = e;
+        mats[MAXERR - 1] = mat;
     } else {
-        err[count] = &e;
-        mats[count] = &mat;
+        err[count] = e;
+        mats[count] = mat;
     }
 
     count++;
