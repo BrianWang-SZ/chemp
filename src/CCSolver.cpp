@@ -4,7 +4,7 @@
 #include "HfSolver.hpp"
 #include "Molecule.hpp"
 
- #define INDEX(i,j) ((i>j) ? (((i)*((i)+1)/2)+(j)) : (((j)*((j)+1)/2)+(i)))
+#define INDEX(i,j) ((i>j) ? (((i)*((i)+1)/2)+(j)) : (((j)*((j)+1)/2)+(i)))
 #define MAXITER 100
 #define DELTA_1 1e-12
 
@@ -54,9 +54,9 @@ double CCSolver::calc_ccsd_energy(){
 }
 
 double CCSolver::compute(){
-    double **Fae = Helper::create2d(nso, nso);
-    double **Fmi = Helper::create2d(nso, nso);
-    double **Fme = Helper::create2d(nso, nso);
+    double **Fae = Helper::create2d(nso);
+    double **Fmi = Helper::create2d(nso);
+    double **Fme = Helper::create2d(nso);
 
     double ****Wmnij = Helper::create4d(nso);
     double ****Wabef = Helper::create4d(nso); 
@@ -314,7 +314,7 @@ void CCSolver::update_interm(double **Fae, double **Fmi, double **Fme,
     }
 }
 
-void CCSolver::updateT(Matrix Fae, Matrix Fmi, Matrix Fme, 
+void CCSolver::updateT(double **Fae, double **Fmi, double **Fme, 
                        double ****Wmnij, double ****Wabef, double ****Wmbej){
 
     // update T1 matrix (Equation 1)
