@@ -58,6 +58,10 @@ double CCSolver::compute(){
     Matrix Fmi = Matrix::Zero(nso, nso);
     Matrix Fme = Matrix::Zero(nso, nso);
 
+    Helper::print_matrix(Fae);
+    Helper::print_matrix(Fmi);
+    Helper::print_matrix(Fme);
+
     double ****Wmnij = Helper::create4d(nso);
     double ****Wabef = Helper::create4d(nso); 
     double ****Wmbej = Helper::create4d(nso);
