@@ -12,7 +12,7 @@ DIIS::DIIS(){
 
 void DIIS::add(Matrix *mat, Matrix *e){
 
-    e.resize(e.rows() * e.cols(), 1);
+    e -> resize(e -> rows() * e -> cols(), 1);
     
     if (count >= MAXERR) {
         shift();
