@@ -17,7 +17,7 @@ private:
     
     double **t_ia, **D_ia;
     double ****t_ijab, ****D_ijab;
-    Matrix Fs;
+    double **Fs;
     
     void initialize_Fs();
     void initialize_D();
@@ -28,10 +28,10 @@ private:
     
     double calc_ccsd_energy();
     
-    void update_interm(Matrix &Fae, Matrix &Fmi, Matrix &Fme,
+    void update_interm(double **Fae, double **Fmi, double **Fme,
                        double ****Wmnij, double ****Wabef, double ****Wmbej);
 
-    void updateT( Matrix Fae, Matrix Fmi, Matrix Fme, 
+    void updateT( double **Fae, double **Fmi, double **Fme, 
                   double ****Wmnij, double ****Wabef, double ****Wmbej);
 
 };

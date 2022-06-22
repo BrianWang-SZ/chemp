@@ -9,7 +9,7 @@
 #define DELTA_1 1e-12
 
 CCSolver::CCSolver(Molecule &m): 
-    HfSolver(m, false), Fs(nso, nso){
+    HfSolver(m, false){
 
     // convert from AO spatial to MO spatial
     moeri = spatial_atom();
@@ -36,7 +36,7 @@ double CCSolver::calc_ccsd_energy(){
     
     for (int i = 0; i < noso; i++){
         for (int a = noso; a < nso; a++){
-            energy += Fs(i, a) * t_ia[i][a];
+            energy += Fs[i][a] * t_ia[i][a];
         }
     }
 
@@ -54,13 +54,9 @@ double CCSolver::calc_ccsd_energy(){
 }
 
 double CCSolver::compute(){
-    Matrix Fae = Matrix::Zero(nso, nso);
-    Matrix Fmi = Matrix::Zero(nso, nso);
-    Matrix Fme = Matrix::Zero(nso, nso);
-
-    Helper::print_matrix(Fae);
-    Helper::print_matrix(Fmi);
-    Helper::print_matrix(Fme);
+    double **Fae = Helper::create2d(nso, nso);
+    double **Fmi = Helper::create2d(nso, nso);
+    double **Fme = Helper::create2d(nso, nso);
 
     double ****Wmnij = Helper::create4d(nso);
     double ****Wabef = Helper::create4d(nso); 
@@ -92,6 +88,10 @@ double CCSolver::compute(){
         printf("Ecc = %21.12f\n", E_curr);
     }
 
+    Helper::free2d(Fae, nso);
+    Helper::free2d(Fmi, nso);
+    Helper::free2d(Fme, nso);
+
     Helper::free4d(Wmnij, nso);
     Helper::free4d(Wabef, nso);
     Helper::free4d(Wmbej, nso);
@@ -102,18 +102,15 @@ double CCSolver::compute(){
 void CCSolver::initialize_Fs(){
     Matrix evals = get_eval();
 
+    Fs = Helper::create2d(nso, nso);
 
     for (int p = 0; p < nso; p++){
         for (int q = 0; q < nso; q++){
-            Fs(p, q) = 0;
-
             if (p == q) {
-                Fs(p, q) = evals(p/2);
+                Fs[p][q] = evals(p / 2);
             }
         }
     }
-    Helper::print_matrix(evals);
-    Helper::print_matrix(Fs);
 }
 
 void CCSolver::initialize_D(){
@@ -124,7 +121,7 @@ void CCSolver::initialize_D(){
         for (int j = 0; j < noso; j++){
             for (int a = noso; a < nso; a++){
                 for (int b = noso; b < nso; b++){
-                    D_ijab[i][j][a][b] = Fs(i, i) + Fs(j, j) - Fs(a, a) - Fs(b, b);
+                    D_ijab[i][j][a][b] = Fs[i][i] + Fs[j][j] - Fs[a][a] - Fs[b][b];
                 }
             }
         }
@@ -134,7 +131,7 @@ void CCSolver::initialize_D(){
     D_ia = Helper::create2d(nso);
     for (int i = 0; i < noso; i++){
         for (int a = noso; a < nso; a++){
-            D_ia[i][a] = Fs(i, i) - Fs(a, a);
+            D_ia[i][a] = Fs[i][i] - Fs[a][a];
         }
     }
 }
@@ -148,7 +145,7 @@ void CCSolver::initialize_T(){
         for (int j = 0; j < noso; j++){
             for (int a = noso; a < nso; a++){
                 for (int b = noso; b < nso; b++){                 
-                    t_ijab[i][j][a][b] = mospin[i][j][a][b] / (Fs(i, i) + Fs(j, j) - Fs(a, a) - Fs(b, b));
+                    t_ijab[i][j][a][b] = mospin[i][j][a][b] / (Fs[i][i] + Fs[j][j] - Fs[a][a] - Fs[b][b]);
                 }
             }
         }
@@ -157,25 +154,25 @@ void CCSolver::initialize_T(){
     t_ia = Helper::create2d(nso);
 }
 
-void CCSolver::update_interm(Matrix &Fae, Matrix &Fmi, Matrix &Fme,
+void CCSolver::update_interm(double **Fae, double **Fmi, double **Fme,
                              double ****Wmnij, double ****Wabef, double ****Wmbej){
     
     // update Fae matrix (Equation 3)
     for (int a = noso; a < nso; a++){
         for (int e = noso; e < nso; e++){
             // Term 1
-            Fae(a, e) = (1 - (a == e)) * Fs(a, e);
+            Fae[a][e] = (1 - (a == e)) * Fs[a][e];
             
             // Term 2
             for (int m = 0; m < noso; m++){
                 
-                Fae(a, e) -= Fs(m, e) * t_ia[m][a] / 2;
+                Fae[a][e] -= Fs[m][e] * t_ia[m][a] / 2;
             }
 
             // Term 3
             for (int m = 0; m < noso; m++){    
                 for (int f = noso; f < nso; f++){
-                    Fae(a, e) += t_ia[m][f] * mospin[m][a][f][e];
+                    Fae[a][e] += t_ia[m][f] * mospin[m][a][f][e];
                 }
             }
 
@@ -183,7 +180,7 @@ void CCSolver::update_interm(Matrix &Fae, Matrix &Fmi, Matrix &Fme,
             for (int m = 0; m < noso; m++){ 
                 for (int n = 0; n < noso; n++){
                     for (int f = noso; f < nso; f++){   
-                        Fae(a, e) -= taut(m, n, a, f) * mospin[m][n][e][f] / 2;
+                        Fae[a][e] -= taut(m, n, a, f) * mospin[m][n][e][f] / 2;
                     }
                 }
             }
@@ -194,17 +191,17 @@ void CCSolver::update_interm(Matrix &Fae, Matrix &Fmi, Matrix &Fme,
     for (int m = 0; m < noso; m++){
         for (int i = 0; i < noso; i++){
             // Term 1
-            Fmi(m, i) = (1 - (m == i)) * Fs(m, i);
+            Fmi[m][i] = (1 - (m == i)) * Fs[m][i];
             
             // Term 2
             for (int e = noso; e < nso; e++){
-                Fmi(m, i) += t_ia[i][e] * Fs(m, e) / 2;
+                Fmi[m][i] += t_ia[i][e] * Fs[m][e] / 2;
             }
 
             // Term 3
             for (int e = noso; e < nso; e++){
                 for (int n = 0; n < noso; n++){
-                    Fmi(m, i) += t_ia[n][e] * mospin[m][n][i][e];    
+                    Fmi[m][i] += t_ia[n][e] * mospin[m][n][i][e];    
                 }
             }
 
@@ -212,7 +209,7 @@ void CCSolver::update_interm(Matrix &Fae, Matrix &Fmi, Matrix &Fme,
             for (int n = 0; n < noso; n++){
                 for (int e = noso; e < nso; e++){
                     for (int f = noso; f < nso; f++){
-                        Fmi(m, i) += taut(i, n, e, f) * mospin[m][n][e][f] / 2;
+                        Fmi[m][i] += taut(i, n, e, f) * mospin[m][n][e][f] / 2;
                     }
                 }
             }
@@ -223,12 +220,12 @@ void CCSolver::update_interm(Matrix &Fae, Matrix &Fmi, Matrix &Fme,
     for (int m = 0; m < noso; m++){
         for (int e = noso; e < nso; e++){
             // Term 1
-            Fme(m, e) = Fs(m, e);
+            Fme[m][e] = Fs[m][e];
 
             // Term 2
             for (int n = 0; n < noso; n++){
                 for (int f = noso; f < nso; f++){
-                    Fme(m, e) += t_ia[n][f] * mospin[m][n][e][f];
+                    Fme[m][e] += t_ia[n][f] * mospin[m][n][e][f];
                 }
             }
         }
@@ -326,23 +323,23 @@ void CCSolver::updateT(Matrix Fae, Matrix Fmi, Matrix Fme,
     for (int i = 0; i < noso; i++){
         for (int a = noso; a < nso; a++){
             // Term 1
-            tmp2d[i][a] = Fs(i, a);
+            tmp2d[i][a] = Fs[i][a];
 
             // Term 2
             for (int e = noso; e < nso; e++){
-                tmp2d[i][a] += t_ia[i][e] * Fae(a, e);
+                tmp2d[i][a] += t_ia[i][e] * Fae[a][e];
             }
 
             // Term 3
             for (int m = 0; m < noso; m++){
-                tmp2d[i][a] += t_ia[m][a] * Fmi(m, i);
+                tmp2d[i][a] += t_ia[m][a] * Fmi[m][i];
             }
 
             // Term 4
             for (int m = 0; m < noso; m++){
                 for (int e = noso; e < nso; e++){
                     
-                    tmp2d[i][a] += t_ijab[i][m][a][e] * Fme(m, e);
+                    tmp2d[i][a] += t_ijab[i][m][a][e] * Fme[m][e];
                 }
             }
 
@@ -385,29 +382,29 @@ void CCSolver::updateT(Matrix Fae, Matrix Fmi, Matrix Fme,
                     
                     // Term 2.1
                     for (int e = noso; e < nso; e++){
-                        tmp4d[i][j][a][b] += t_ijab[i][j][a][e] * Fae(b, e) - 
-                                             t_ijab[i][j][b][e] * Fae(a, e);
+                        tmp4d[i][j][a][b] += t_ijab[i][j][a][e] * Fae[b][e] - 
+                                             t_ijab[i][j][b][e] * Fae[a][e];
                     }
 
                     // Term 2.2
                     for (int e = noso; e < nso; e++){
                         for (int m = 0; m < noso; m++){
-                            tmp4d[i][j][a][b] -= (t_ijab[i][j][a][e] * t_ia[m][b] * Fme(m, e) - 
-                                                  t_ijab[i][j][b][e] * t_ia[m][a] * Fme(m, e)) / 2;
+                            tmp4d[i][j][a][b] -= (t_ijab[i][j][a][e] * t_ia[m][b] * Fme[m][e] - 
+                                                  t_ijab[i][j][b][e] * t_ia[m][a] * Fme[m][e]) / 2;
                         }
                     }
 
                     // Term 3.1
                     for (int m = 0; m < noso; m++){
-                        tmp4d[i][j][a][b] -= t_ijab[i][m][a][b] * Fmi(m, j) - 
-                                             t_ijab[j][m][a][b] * Fmi(m, i);
+                        tmp4d[i][j][a][b] -= t_ijab[i][m][a][b] * Fmi[m][j] - 
+                                             t_ijab[j][m][a][b] * Fmi[m][i];
                     }
                     
                     // Term 3.2
                     for (int m = 0; m < noso; m++){
                         for (int e = noso; e < nso; e++){
-                            tmp4d[i][j][a][b] -= (t_ijab[i][m][a][b] * t_ia[j][e] * Fme(m, e) -
-                                                  t_ijab[j][m][a][b] * t_ia[i][e] * Fme(m, e)) / 2;
+                            tmp4d[i][j][a][b] -= (t_ijab[i][m][a][b] * t_ia[j][e] * Fme[m][e] -
+                                                  t_ijab[j][m][a][b] * t_ia[i][e] * Fme[m][e]) / 2;
                         }
                     }
                     
