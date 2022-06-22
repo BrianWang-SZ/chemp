@@ -449,7 +449,7 @@ void CCSolver::updateT(Matrix Fae, Matrix Fmi, Matrix Fme,
 
     for (int i = 0; i < noso; i++){
         for (int a = noso; a < nso; a++){
-            t_ia[i][a] = tmp2d[i][a] / D_ia[i][a];
+            t_ia[i][a] = tmp2d[i][a]; /// D_ia[i][a];
         }
     }
     Helper::free2d(tmp2d, nso);
@@ -458,7 +458,7 @@ void CCSolver::updateT(Matrix Fae, Matrix Fmi, Matrix Fme,
         for (int j = 0; j < noso; j++){
             for (int a = noso; a < nso; a++){
                 for (int b = noso; b < nso; b++){
-                    t_ijab[i][j][a][b] = tmp4d[i][j][a][b] / D_ijab[i][j][a][b];
+                    t_ijab[i][j][a][b] = tmp4d[i][j][a][b]; /// D_ijab[i][j][a][b];
                 }
             }
         }
