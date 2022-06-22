@@ -98,8 +98,11 @@ double CCSolver::compute(){
 void CCSolver::initialize_Fs(){
     Matrix evals = get_eval();
 
+
     for (int p = 0; p < nso; p++){
         for (int q = 0; q < nso; q++){
+            Fs(p, q) = 0;
+
             if (p == q) {
                 Fs(p, q) = evals(p/2);
             }
