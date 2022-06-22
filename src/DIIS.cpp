@@ -39,7 +39,7 @@ Matrix DIIS::extrap(){
     b[B.cols() - 1] = -1;
     Eigen::VectorXd c = B.householderQr().solve(b);
     fprintf(stderr, "row %ld, col %ld", mats[0].rows(), mats[0].cols());
-    Matrix ext(*mats[0].rows(), *mats[0].cols());
+    Matrix ext(mats[0] -> rows(), mats[0] -> cols());
 
     for (int i = 0; i < c.size() - 1; i++){
         ext += c[i] * (*mats[i]);
@@ -52,7 +52,7 @@ Matrix DIIS::build_B(){
     Matrix B(size + 1, size + 1);
     for (int i = 0; i < size; i++){
         for (int j = 0; j <= i; j++){
-            B(i, j) = (*err[i].transpose() * *err[j])(0, 0);
+            B(i, j) = (err[i] -> transpose() * (*err[j]))(0, 0);
             B(j, i) = B(i, j);  //symmetry
         }
     }
