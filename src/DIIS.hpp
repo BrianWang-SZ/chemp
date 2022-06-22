@@ -12,8 +12,8 @@ public:
 
 private:
     int count;
-    Matrix *err;
-    Matrix *mats;
+    Matrix **err;
+    Matrix **mats;
     Matrix build_B();
     void shift();
     

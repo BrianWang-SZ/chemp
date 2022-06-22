@@ -5,8 +5,8 @@
 #define MAXERR 8
 
 DIIS::DIIS(){
-    err = new Matrix&[MAXERR];
-    mats = new Matrix&[MAXERR];
+    err = new Matrix*[MAXERR];
+    mats = new Matrix*[MAXERR];
     count = 0;
 }
 
@@ -16,11 +16,11 @@ void DIIS::add(Matrix &mat, Matrix &e){
     
     if (count >= MAXERR) {
         shift();
-        err[MAXERR - 1] = e;
-        mats[MAXERR - 1] = mat;
+        err[MAXERR - 1] = &e;
+        mats[MAXERR - 1] = &mat;
     } else {
-        err[count] = e;
-        mats[count] = mat;
+        err[count] = &e;
+        mats[count] = &mat;
     }
 
     count++;
@@ -39,10 +39,10 @@ Matrix DIIS::extrap(){
     b[B.cols() - 1] = -1;
     Eigen::VectorXd c = B.householderQr().solve(b);
     fprintf(stderr, "row %ld, col %ld", mats[0].rows(), mats[0].cols());
-    Matrix ext(mats[0].rows(), mats[0].cols());
+    Matrix ext(*mats[0].rows(), *mats[0].cols());
 
     for (int i = 0; i < c.size() - 1; i++){
-        ext += c[i] * mats[i];
+        ext += c[i] * (*mats[i]);
     }
     return ext;
 }
@@ -52,7 +52,7 @@ Matrix DIIS::build_B(){
     Matrix B(size + 1, size + 1);
     for (int i = 0; i < size; i++){
         for (int j = 0; j <= i; j++){
-            B(i, j) = (err[i].transpose() * err[j])(0, 0);
+            B(i, j) = (*err[i].transpose() * *err[j])(0, 0);
             B(j, i) = B(i, j);  //symmetry
         }
     }
