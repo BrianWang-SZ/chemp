@@ -99,30 +99,39 @@ double HfSolver::compute(){
             }
         }
 
-        DIIS d;
+        // DIIS d;
         Matrix new_D(norb, norb);
 
-        /* DIIS optimization starts*/
-        if(count >= 2){
-            F = d.extrap();
-            updateDensity(new_D);
-            updateFock();
-            Matrix e = F * D * S - S * D * F;
-            d.add(&F, &e);
+        // /* DIIS optimization starts*/
+        // if(count >= 2){
+        //     F = d.extrap();
+        //     updateDensity(new_D);
+        //     updateFock();
+        //     Matrix e = F * D * S - S * D * F;
+        //     d.add(&F, &e);
             
-        } else {
-            updateFock();
+        // } else {
+        //     updateFock();
             
-            if(toprint && count == 0){
-                printf("\tFock Matrix:\n\n");
-                Helper::print_matrix(F);
-            }
+        //     if(toprint && count == 0){
+        //         printf("\tFock Matrix:\n\n");
+        //         Helper::print_matrix(F);
+        //     }
             
-            Matrix e = F * D * S - S * D * F;
-            d.add(&F, &e);
-            updateDensity(new_D);
+        //     Matrix e = F * D * S - S * D * F;
+        //     d.add(&F, &e);
+        //     updateDensity(new_D);
+        // }
+        // /* DIIS optimization ends*/
+
+        updateFock();
+            
+        if(toprint && count == 0){
+            printf("\tFock Matrix:\n\n");
+            Helper::print_matrix(F);
         }
-        /* DIIS optimization ends*/
+        
+        updateDensity(new_D);
 
         rms = Helper::calc_rms(D, new_D);
         D = new_D;
