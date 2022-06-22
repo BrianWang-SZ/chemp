@@ -24,6 +24,7 @@ CCSolver::CCSolver(Molecule &m):
 CCSolver::~CCSolver(){
     delete[] moeri;
     Helper::free4d(mospin, nso);
+    Helper::free2d(Fs, nso);
     
     Helper::free2d(t_ia, nso);
     Helper::free4d(t_ijab, nso);
@@ -102,7 +103,7 @@ double CCSolver::compute(){
 void CCSolver::initialize_Fs(){
     Matrix evals = get_eval();
 
-    Fs = Helper::create2d(nso, nso);
+    Fs = Helper::create2d(nso);
 
     for (int p = 0; p < nso; p++){
         for (int q = 0; q < nso; q++){
