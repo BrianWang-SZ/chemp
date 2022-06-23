@@ -8,15 +8,15 @@
 int main (int argc, char **argv){
     const char *s = "../input/h2o/STO-3G"; 
     Molecule m(s);
-    HfSolver hfs(m, true);
-    hfs.compute();
+    //HfSolver hfs(m, true);
+    //hfs.compute();
     // GeomSolver gs(m);
     // gs.solve();
     // VibSolver vs(m);
     // vs.solve();
-    //Mp2Solver ms(m);
-    //ms.compute();
-    //CCSolver ccs(m);
-    //ccs.compute();
+    Mp2Solver ms(m);
+    ms.compute();
+    CCSolver ccs(m);
+    ccs.compute();
     
 }
