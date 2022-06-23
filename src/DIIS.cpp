@@ -35,7 +35,7 @@ void DIIS::shift(){
 
 Matrix DIIS::extrap(){
     printf("hereh\n");
-    if (mats[0] == NULL) printf("null detected\n");
+    if (mats[0] == NULL) printf("mats[0] %p\n", mats[0]);
     fprintf(stderr, "row %ld, col %ld", mats[0] -> rows(), mats[0] -> cols());
     printf("here\n");
     Matrix B = build_B();
