@@ -32,7 +32,7 @@ CCSolver::~CCSolver(){
     Helper::free4d(D_ijab, nso);
 }
 
-double CCSolver::calc_ccsd_energy(){
+double CCSolver::calc_ccsd_energy() const{
     double energy = 0.0;
     
     for (int i = 0; i < noso; i++){
@@ -156,7 +156,7 @@ void CCSolver::initialize_T(){
 }
 
 void CCSolver::update_interm(double **Fae, double **Fmi, double **Fme,
-                             double ****Wmnij, double ****Wabef, double ****Wmbej){
+                             double ****Wmnij, double ****Wabef, double ****Wmbej) const{
     
     // update Fae matrix (Equation 3)
     for (int a = noso; a < nso; a++){
@@ -469,11 +469,11 @@ void CCSolver::updateT(double **Fae, double **Fmi, double **Fme,
 }
 
 // Equation 10
-double CCSolver::tau(int i, int j, int a, int b){
+double CCSolver::tau(int i, int j, int a, int b) const{
     return t_ijab[i][j][a][b] + t_ia[i][a] * t_ia[j][b] - t_ia[i][b] * t_ia[j][a];
 }
 
 // Equation 9
-double CCSolver::taut(int i, int j, int a, int b){
+double CCSolver::taut(int i, int j, int a, int b) const{
     return t_ijab[i][j][a][b] + (t_ia[i][a] * t_ia[j][b] - t_ia[i][b] * t_ia[j][a]) / 2;
 }

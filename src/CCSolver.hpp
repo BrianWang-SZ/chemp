@@ -23,13 +23,13 @@ private:
     void initialize_D();
     void initialize_T();
 
-    double tau(int i, int j, int a, int b);
-    double taut(int i, int j, int a, int b);
+    double tau(int i, int j, int a, int b) const;
+    double taut(int i, int j, int a, int b) const;
     
-    double calc_ccsd_energy();
+    double calc_ccsd_energy() const;
     
     void update_interm(double **Fae, double **Fmi, double **Fme,
-                       double ****Wmnij, double ****Wabef, double ****Wmbej);
+                       double ****Wmnij, double ****Wabef, double ****Wmbej) const;
 
     void updateT( double **Fae, double **Fmi, double **Fme, 
                   double ****Wmnij, double ****Wabef, double ****Wmbej);
