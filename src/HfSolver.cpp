@@ -113,6 +113,7 @@ double HfSolver::compute(){
             
             Matrix e = F * D * S - S * D * F;
             updateDensity(new_D);
+            updateFock();
             d.add(F, e);
             
             
