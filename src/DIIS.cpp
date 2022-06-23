@@ -41,7 +41,6 @@ Matrix DIIS::extrap(){
         b[i] = 0;
     }
     b[B.cols() - 1] = -1;
-    std::cout << b << std::endl;
     Eigen::VectorXd c = B.householderQr().solve(b);
     Matrix ext(mats[0].rows(), mats[0].cols());
 
@@ -65,6 +64,8 @@ Matrix DIIS::build_B(){
         B(size, i) = -1;
         B(i, size) = -1;
     }
+
+    std::cout << B << std::endl;
 
     return B;
 }
