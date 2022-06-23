@@ -28,7 +28,7 @@ protected:
     double *eri;
     double **s, **t, **v, **ham;
 
-    double** readMatrix(std::string path);
+    double** readMatrix(std::string path) const;
 
 private:
     void read_one_electron();

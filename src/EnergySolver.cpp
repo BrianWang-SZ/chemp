@@ -90,7 +90,7 @@ int EnergySolver::calc_norb(std::string path){
     return -1;
 }
 
-double** EnergySolver::readMatrix(std::string path){
+double** EnergySolver::readMatrix(std::string path) const{
 
     if (this -> norb == 0) {
         int norb = calc_norb(path);
