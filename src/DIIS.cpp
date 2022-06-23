@@ -12,6 +12,7 @@ DIIS::DIIS(){
 }
 
 void DIIS::add(Matrix &mat, Matrix &e){
+    Helper::print_matrix(e);
     if (count >= MAXERR) {
         shift();
         err[MAXERR - 1] = e;
@@ -33,7 +34,6 @@ void DIIS::shift(){
 
 Matrix DIIS::extrap() const{
     Matrix B = build_B();
-    Helper::print_matrix(B);
     Eigen::VectorXd b(B.cols());
     for (int i = 0; i < B.cols(); i++){
         b[i] = 0;
