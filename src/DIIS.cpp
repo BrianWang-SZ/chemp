@@ -34,6 +34,8 @@ void DIIS::shift(){
 }
 
 Matrix DIIS::extrap(){
+
+    fprintf(stderr, "row %ld, col %ld", mats[0] -> rows(), mats[0] -> cols());
     printf("here\n");
     Matrix B = build_B();
     printf("here\n");
@@ -43,7 +45,6 @@ Matrix DIIS::extrap(){
     printf("here\n");
     Eigen::VectorXd c = B.householderQr().solve(b);
     printf("here\n");
-    fprintf(stderr, "row %ld, col %ld", mats[0] -> rows(), mats[0] -> cols());
     printf("here\n");
     Matrix ext(mats[0] -> rows(), mats[0] -> cols());
     printf("here\n");
