@@ -8,13 +8,13 @@ class DIIS{
 public:
     DIIS();
     void add(Matrix &mat, Matrix &e);
-    Matrix extrap();
+    Matrix extrap() const;
 
 private:
     int count;
     Matrix *err;
     Matrix *mats;
-    Matrix build_B();
+    Matrix build_B() const;
     void shift();
     
 };
