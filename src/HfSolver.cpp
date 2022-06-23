@@ -109,8 +109,9 @@ double HfSolver::compute(){
             
             F = d.extrap();
             
-            Matrix e = F * D * S - S * D * F;
+            
             updateDensity(new_D);
+            Matrix e = F * new_D * S - S * new_D * F;
             updateFock();
             d.add(F, e);
             
@@ -125,7 +126,7 @@ double HfSolver::compute(){
 
             updateDensity(new_D);
             
-            Matrix e = F * D * S - S * D * F;
+            Matrix e = F * new_D * S - S * new_D * F;
             Helper::print_matrix(e);
             d.add(F, e);
             
