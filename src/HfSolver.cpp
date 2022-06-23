@@ -103,44 +103,48 @@ double HfSolver::compute(){
         
         Matrix new_D(norb, norb);
 
-        // /* DIIS optimization starts*/
-        // if(count >= 2){
-        //     F = d.extrap();
-            
-        //     updateDensity(new_D);
-            
-        //     Matrix e = F * D * S - S * D * F;
-        //     Helper::print_matrix(e);
-        //     d.add(F, e);
-            
-        // } else {
-        //     updateFock();
-            
-        //     if(toprint && count == 0){
-        //         printf("\tFock Matrix:\n\n");
-        //         Helper::print_matrix(F);
-        //     }
+        /* DIIS optimization starts*/
+        if(count >= 2){
+            //F = d.extrap();
+            updapteFock();
 
-        //     updateDensity(new_D);
+            Matrix e = F * D * S - S * D * F;
+            Helper::print_matrix(e);
+
+            updateDensity(new_D);
             
-        //     Matrix e = F * D * S - S * D * F;
-        //     Helper::print_matrix(e);
-        //     d.add(F, e);
+            d.add(F, e);
             
-        // }
+        } else {
+            updateFock();
+            
+            if(toprint && count == 0){
+                printf("\tFock Matrix:\n\n");
+                Helper::print_matrix(F);
+            }
+
+            updateDensity(new_D);
+            
+            Matrix e = F * D * S - S * D * F;
+            Helper::print_matrix(e);
+            d.add(F, e);
+            
+        }
         /* DIIS optimization ends*/
 
-        updateFock();
+        /****/
+        // updateFock();
 
-        Matrix e = F * D * S - S * D * F;
-        Helper::print_matrix(e);
+        // Matrix e = F * D * S - S * D * F;
+        // Helper::print_matrix(e);
             
-        if(toprint && count == 0){
-            printf("\tFock Matrix:\n\n");
-            Helper::print_matrix(F);
-        }
+        // if(toprint && count == 0){
+        //     printf("\tFock Matrix:\n\n");
+        //     Helper::print_matrix(F);
+        // }
         
-        updateDensity(new_D);
+        // updateDensity(new_D);
+        /****/
 
         rms = Helper::calc_rms(D, new_D);
         D = new_D;
