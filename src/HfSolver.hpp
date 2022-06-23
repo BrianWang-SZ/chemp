@@ -22,7 +22,7 @@ protected:
 private:
     bool computed;
 
-    double calc_hf_energy();
+    double calc_hf_energy() const;
     void initialize();
     void updateFock();
     void updateDensity(Matrix &new_D);

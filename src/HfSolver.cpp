@@ -58,7 +58,7 @@ void HfSolver::compute_dipole(){
     Helper::free2d(muz, norb);
 }
 
-double HfSolver::calc_hf_energy(){
+double HfSolver::calc_hf_energy() const{
     double E = 0.0;
     for (int i = 0; i < norb; i++){
         for (int j = 0; j < norb; j++){
@@ -106,8 +106,6 @@ double HfSolver::compute(){
 
         /* DIIS optimization starts*/
         if(count >= 2){
-            
-            
             
             F = d.extrap();
             
