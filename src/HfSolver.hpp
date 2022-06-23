@@ -15,9 +15,9 @@ public:
 protected:
     Matrix C, D, F, isqrt_S;
 
-    double* spatial_atom();
-    double**** spatial_to_spin(double *moeri);
-    Matrix get_eval();
+    double* spatial_atom() const;
+    double**** spatial_to_spin(double *moeri) const;
+    Matrix get_eval() const;
 
 private:
     bool computed;
@@ -26,7 +26,7 @@ private:
     void initialize();
     void updateFock();
     void updateDensity(Matrix &new_D);
-    void compute_dipole();
+    void compute_dipole() const;
 };
 
 #endif /* HFSOLVER_H */

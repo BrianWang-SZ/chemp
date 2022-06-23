@@ -18,13 +18,13 @@ HfSolver::HfSolver(Molecule &m, bool toprint):
     if (!toprint) compute();
 }
 
-Matrix HfSolver::get_eval(){
+Matrix HfSolver::get_eval() const{
     Matrix Fp = isqrt_S.transpose() * F * isqrt_S;
     Eigen::SelfAdjointEigenSolver<Matrix> solver(Fp);
     return solver.eigenvalues();
 }
 
-void HfSolver::compute_dipole(){
+void HfSolver::compute_dipole() const{
     double **mux, **muy, **muz;
     
     std::string path = dir + "/mux.dat";
@@ -272,7 +272,7 @@ void HfSolver::updateDensity(Matrix &new_D){
     }
 }
 
-double* HfSolver::spatial_atom(){
+double* HfSolver::spatial_atom() const{
     
     int max = INDEX(norb, norb);
     double *moeri = new double[INDEX(max, max) + 1];
@@ -357,7 +357,7 @@ double* HfSolver::spatial_atom(){
     return moeri;
 }
 
-double**** HfSolver::spatial_to_spin(double *moeri){
+double**** HfSolver::spatial_to_spin(double *moeri) const{
 
     double ****mospin = Helper::create4d(nso);
 
