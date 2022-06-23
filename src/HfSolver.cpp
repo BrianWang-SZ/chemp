@@ -108,7 +108,7 @@ double HfSolver::compute(){
             F = d.extrap();
             updateDensity(new_D);
             updateFock();
-            Matrix e = F * D * S - S * D * F;
+            Matrix e = F * new_D * S - S * new_D * F;
             d.add(F, e);
             
         } else {
@@ -118,10 +118,12 @@ double HfSolver::compute(){
                 printf("\tFock Matrix:\n\n");
                 Helper::print_matrix(F);
             }
+
+            updateDensity(new_D);
             
             Matrix e = F * D * S - S * D * F;
             d.add(F, e);
-            updateDensity(new_D);
+            
         }
         /* DIIS optimization ends*/
 
