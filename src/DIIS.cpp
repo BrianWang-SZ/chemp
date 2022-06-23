@@ -34,6 +34,7 @@ void DIIS::shift(){
 
 Matrix DIIS::extrap(){
     Matrix B = build_B();
+    Helper::print_matrix(B);
     Eigen::VectorXd b(B.cols());
     for (int i = 0; i < B.cols(); i++){
         b[i] = 0;
@@ -58,8 +59,6 @@ Matrix DIIS::build_B(){
             B(j, i) = B(i, j);  //symmetry
         }
     }
-
-    if (count >= 8) Helper::print_matrix(B);
 
     for (int i = 0; i < size; i++){
         B(size, i) = -1;
