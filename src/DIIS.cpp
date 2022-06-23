@@ -42,7 +42,7 @@ Matrix DIIS::extrap(){
     }
     b[B.cols() - 1] = -1;
     Eigen::VectorXd c = B.householderQr().solve(b);
-    std::cout << c << std::endl;
+    
     Matrix ext(mats[0].rows(), mats[0].cols());
 
     for (int i = 0; i < c.size() - 1; i++){
