@@ -35,11 +35,10 @@ void DIIS::shift(){
 }
 
 Matrix DIIS::extrap(){
-    assert(mats[0].rows() == 7);
-    assert(mats[0].cols() == 7);
     Matrix B = build_B();
     Eigen::VectorXd b(B.cols());
     b[B.cols() - 1] = -1;
+    std::cout << b << std::endl;
     Eigen::VectorXd c = B.householderQr().solve(b);
     Matrix ext(mats[0].rows(), mats[0].cols());
 
