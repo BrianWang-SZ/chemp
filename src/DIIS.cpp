@@ -37,6 +37,9 @@ void DIIS::shift(){
 Matrix DIIS::extrap(){
     Matrix B = build_B();
     Eigen::VectorXd b(B.cols());
+    for (int i = 0; i < B.cols(); i++){
+        b[i] = 0;
+    }
     b[B.cols() - 1] = -1;
     std::cout << b << std::endl;
     Eigen::VectorXd c = B.householderQr().solve(b);
