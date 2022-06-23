@@ -18,7 +18,7 @@ HfSolver::HfSolver(Molecule &m, bool toprint):
     if (!toprint) compute();
 }
 
-Matrix HfSolver::get_eval() const{
+Matrix HfSolver::get_eval(){
     Matrix Fp = isqrt_S.transpose() * F * isqrt_S;
     Eigen::SelfAdjointEigenSolver<Matrix> solver(Fp);
     return solver.eigenvalues();
@@ -272,7 +272,7 @@ void HfSolver::updateDensity(Matrix &new_D){
     }
 }
 
-double* HfSolver::spatial_atom() const{
+double* HfSolver::spatial_atom(){
     
     int max = INDEX(norb, norb);
     double *moeri = new double[INDEX(max, max) + 1];
@@ -357,7 +357,7 @@ double* HfSolver::spatial_atom() const{
     return moeri;
 }
 
-double**** HfSolver::spatial_to_spin(double *moeri) const{
+double**** HfSolver::spatial_to_spin(double *moeri){
 
     double ****mospin = Helper::create4d(nso);
 

@@ -15,9 +15,9 @@ public:
 protected:
     Matrix C, D, F, isqrt_S;
 
-    double* spatial_atom() const;
-    double**** spatial_to_spin(double *moeri) const;
-    Matrix get_eval() const;
+    double* spatial_atom();
+    double**** spatial_to_spin(double *moeri);
+    Matrix get_eval();
 
 private:
     bool computed;
