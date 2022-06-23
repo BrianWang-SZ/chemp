@@ -35,8 +35,8 @@ void DIIS::shift(){
 }
 
 Matrix DIIS::extrap(){
-    assert(mats[0].rows() == norb);
-    assert(mats[0].cols() == norb);
+    assert(mats[0].rows() == 7);
+    assert(mats[0].cols() == 7);
     Matrix B = build_B();
     Eigen::VectorXd b(B.cols());
     b[B.cols() - 1] = -1;
