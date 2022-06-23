@@ -106,7 +106,7 @@ double HfSolver::compute(){
         /* DIIS optimization starts*/
         if(count >= 2){
             //F = d.extrap();
-            updapteFock();
+            updateFock();
 
             Matrix e = F * D * S - S * D * F;
             Helper::print_matrix(e);
