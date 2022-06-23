@@ -1,20 +1,19 @@
 #include "DIIS.hpp"
 #include "type.h"
 #include "Helper.hpp"
+#include "assert.h"
 
 #define MAXERR 8
 
 DIIS::DIIS(){
-    err = new Matrix*[MAXERR];
-    mats = new Matrix*[MAXERR];
-    printf("mats %p\n", mats);
+    err = new Matrix[MAXERR];
+    mats = new Matrix[MAXERR];
     count = 0;
 }
 
-void DIIS::add(Matrix *mat, Matrix *e){
+void DIIS::add(Matrix &mat, Matrix &e){
 
-    printf("mat %p\n", mat);
-    e -> resize(e -> rows() * e -> cols(), 1);
+    e.resize(e.rows() * e.cols(), 1);
     
     if (count >= MAXERR) {
         shift();
@@ -36,25 +35,17 @@ void DIIS::shift(){
 }
 
 Matrix DIIS::extrap(){
-    printf("hereh\n");
-    printf("mats[0] %p\n", mats[0]);
-    fprintf(stderr, "row %ld, col %ld", mats[0] -> rows(), mats[0] -> cols());
-    printf("here\n");
+    assert(mats[0].rows() == norb);
+    assert(mats[0].cols() == norb);
     Matrix B = build_B();
-    printf("here\n");
     Eigen::VectorXd b(B.cols());
-    printf("here\n");
     b[B.cols() - 1] = -1;
-    printf("here\n");
     Eigen::VectorXd c = B.householderQr().solve(b);
-    printf("here\n");
-    Matrix ext(mats[0] -> rows(), mats[0] -> cols());
-    printf("here\n");
+    Matrix ext(mats[0].rows(), mats[0].cols());
 
     for (int i = 0; i < c.size() - 1; i++){
-        ext += c[i] * (*mats[i]);
+        ext += c[i] * mats[i];
     }
-    printf("here\n");
     return ext;
 }
 
@@ -63,7 +54,7 @@ Matrix DIIS::build_B(){
     Matrix B(size + 1, size + 1);
     for (int i = 0; i < size; i++){
         for (int j = 0; j <= i; j++){
-            B(i, j) = (err[i] -> transpose() * (*err[j]))(0, 0);
+            B(i, j) = (err[i].transpose() * err[j])(0, 0);
             B(j, i) = B(i, j);  //symmetry
         }
     }

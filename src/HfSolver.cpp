@@ -87,6 +87,8 @@ double HfSolver::compute(){
         printf("%02d%21.12f%21.12f\n", count, E_curr, E_curr + enuc);
     }
 
+    DIIS d;
+
     while (count < MAXITER && (abs(delta_E) >= DELTA_1 || rms >= DELTA_2)){
 
         E_prev = E_curr;
@@ -98,8 +100,7 @@ double HfSolver::compute(){
                 S(i, j) = s[i][j];
             }
         }
-
-        DIIS d;
+        
         Matrix new_D(norb, norb);
 
         /* DIIS optimization starts*/
