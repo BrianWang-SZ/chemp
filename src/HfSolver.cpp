@@ -4,7 +4,7 @@
 #include "EnergySolver.hpp"
 #include "DIIS.hpp"
 
-#define MAXITER 100
+#define MAXITER 1
 #define DELTA_1 1e-12
 #define DELTA_2 1e-11
 
