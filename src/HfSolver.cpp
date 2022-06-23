@@ -89,17 +89,17 @@ double HfSolver::compute(){
 
     DIIS d;
 
+    Matrix S(norb, norb);
+
+    for (int i = 0; i < norb; i++){
+        for (int j = 0; j < norb; j++){
+            S(i, j) = s[i][j];
+        }
+    }
+
     while (count < MAXITER && (abs(delta_E) >= DELTA_1 || rms >= DELTA_2)){
 
         E_prev = E_curr;
-
-        Matrix S(norb, norb);
-
-        for (int i = 0; i < norb; i++){
-            for (int j = 0; j < norb; j++){
-                S(i, j) = s[i][j];
-            }
-        }
         
         Matrix new_D(norb, norb);
 
@@ -110,6 +110,7 @@ double HfSolver::compute(){
             updateDensity(new_D);
             
             Matrix e = F * D * S - S * D * F;
+            std::print_matrix(e);
             d.add(F, e);
             
         } else {
@@ -123,6 +124,7 @@ double HfSolver::compute(){
             updateDensity(new_D);
             
             Matrix e = F * D * S - S * D * F;
+            std::print_matrix(e);
             d.add(F, e);
             
         }
