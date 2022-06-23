@@ -59,6 +59,8 @@ Matrix DIIS::build_B(){
         }
     }
 
+    if (count >= 8) Helper::print_matrix(B);
+
     for (int i = 0; i < size; i++){
         B(size, i) = -1;
         B(i, size) = -1;
