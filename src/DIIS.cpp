@@ -12,7 +12,7 @@ DIIS::DIIS(){
 
 void DIIS::add(Matrix *mat, Matrix *e){
 
-    printf("e %p\n", e);
+    printf("mat %p\n", mat);
     e -> resize(e -> rows() * e -> cols(), 1);
     
     if (count >= MAXERR) {
