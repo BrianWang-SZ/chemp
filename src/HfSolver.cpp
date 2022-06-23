@@ -110,7 +110,7 @@ double HfSolver::compute(){
             updateDensity(new_D);
             
             Matrix e = F * D * S - S * D * F;
-            std::print_matrix(e);
+            Helper::print_matrix(e);
             d.add(F, e);
             
         } else {
@@ -124,7 +124,7 @@ double HfSolver::compute(){
             updateDensity(new_D);
             
             Matrix e = F * D * S - S * D * F;
-            std::print_matrix(e);
+            Helper::print_matrix(e);
             d.add(F, e);
             
         }
