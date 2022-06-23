@@ -34,7 +34,7 @@ private:
     void read_one_electron();
     void read_two_electron();
     void hamiltonian();
-    int calc_norb(std::string path);
+    int calc_norb(std::string path) const;
     void lookupTable();
 };
 

@@ -75,7 +75,7 @@ void EnergySolver::read_two_electron(){
     this -> eri = eri;
 }
 
-int EnergySolver::calc_norb(std::string path){
+int EnergySolver::calc_norb(std::string path) const{
     // count number of lines in the file
     std::ifstream inFile(path); 
     int nline = std::count(std::istreambuf_iterator<char>(inFile), 
@@ -91,15 +91,6 @@ int EnergySolver::calc_norb(std::string path){
 }
 
 double** EnergySolver::readMatrix(std::string path) const{
-
-    if (this -> norb == 0) {
-        int norb = calc_norb(path);
-        if (norb == -1){
-            perror("Exceeds maximum orbitals!");
-            exit(-1);
-        }
-        this -> norb = norb;
-    }
     
     FILE *in;
     double **mat = Helper::create2d(norb);
@@ -158,6 +149,15 @@ void EnergySolver::read_one_electron(){
     }
 
     path = dir + "/s.dat";
+
+    int norb = calc_norb(path);
+    
+    if (norb == -1){
+        perror("Exceeds maximum orbitals!");
+        exit(-1);
+    }
+    this -> norb = norb;
+
     this -> s = readMatrix(path);
     
     path = dir + "/t.dat";
