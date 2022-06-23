@@ -7,6 +7,7 @@
 DIIS::DIIS(){
     err = new Matrix*[MAXERR];
     mats = new Matrix*[MAXERR];
+    printf("mats %p\n", mats);
     count = 0;
 }
 
