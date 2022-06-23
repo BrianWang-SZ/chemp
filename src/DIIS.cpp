@@ -1,7 +1,7 @@
 #include "DIIS.hpp"
 #include "type.h"
 #include "Helper.hpp"
-#include "assert.h"
+#include <iostream>
 
 #define MAXERR 8
 
