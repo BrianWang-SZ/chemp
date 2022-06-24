@@ -106,7 +106,7 @@ double HfSolver::compute(){
         /* DIIS optimization starts*/
         if(count >= 2){
             
-            updateDensity(D, d.extrap());
+            updateDensity(new_D, d.extrap());
             
             updateFock(F, new_D);
 
