@@ -59,7 +59,7 @@ void DIIS::build_B(Matrix &B) const{
         }
     }
 
-    for (int i = 0; i < B.row() - 1; i++){
+    for (int i = 0; i < B.rows() - 1; i++){
         B(B.rows() - 1, i) = -1;
         B(i, B.cols() - 1) = -1;
     }
