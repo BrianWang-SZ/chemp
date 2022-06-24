@@ -12,7 +12,7 @@ DIIS::DIIS(){
 }
 
 void DIIS::add(Matrix &mat, Matrix &e){
-    //Helper::print_matrix(e);
+    Helper::print_matrix(e);
     e.resize(e.rows() * e.cols(), 1);
     if (count >= MAXERR) {
         shift();
@@ -44,7 +44,8 @@ void DIIS::extrap(Matrix &ext) const{
     }
     b[B.cols() - 1] = -1;
     Eigen::VectorXd c = B.colPivHouseholderQr().solve(b);
-    //std::cout << c << std::endl;
+    
+    std::cout << c << std::endl;
 
     for (int i = 0; i < c.size() - 1; i++){
         ext += c[i] * mats[i];
@@ -66,5 +67,5 @@ void DIIS::build_B(Matrix &B) const{
     }
 
     B(B.rows() - 1, B.cols() - 1) = 0.0;
-    //Helper::print_matrix(B);
+    Helper::print_matrix(B);
 }
