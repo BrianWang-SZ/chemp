@@ -32,7 +32,7 @@ void DIIS::shift(){
     }
 }
 
-Matrix DIIS::extrap() const{
+void DIIS::extrap(Matrix &ext) const{
     Matrix B = build_B();
     Eigen::VectorXd b(B.cols());
     for (int i = 0; i < B.cols(); i++){
@@ -46,7 +46,6 @@ Matrix DIIS::extrap() const{
     for (int i = 0; i < c.size() - 1; i++){
         ext += c[i] * mats[i];
     }
-    return ext;
 }
 
 Matrix DIIS::build_B() const{

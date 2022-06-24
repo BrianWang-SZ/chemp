@@ -8,7 +8,7 @@ class DIIS{
 public:
     DIIS();
     void add(Matrix &mat, Matrix &e);
-    Matrix extrap() const;
+    void extrap(Matrix &ext) const;
 
 private:
     int count;
