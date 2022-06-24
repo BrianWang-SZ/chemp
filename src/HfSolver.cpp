@@ -58,7 +58,7 @@ void HfSolver::compute_dipole() const{
     Helper::free2d(muz, norb);
 }
 
-double HfSolver::calc_hf_energy() const{
+double HfSolver::calc_hf_energy(Matrix D, Matrix F) const{
     double E = 0.0;
     for (int i = 0; i < norb; i++){
         for (int j = 0; j < norb; j++){
@@ -106,13 +106,13 @@ double HfSolver::compute(){
         /* DIIS optimization starts*/
         if(count >= 2){
             
-            new_D = updateDensity(d.extrap());
+            updateDensity(d.extrap());
             
             F = updateFock(new_D);
 
-            new_D = updateDensity(F);
-
             Matrix e = F * new_D * S - S * new_D * F;
+
+            E_curr = calc_hf_energy(D, F);
 
             d.add(F, e);
 
@@ -125,6 +125,8 @@ double HfSolver::compute(){
             }
 
             new_D = updateDensity(F);
+
+            E_curr = calc_hf_energy(new_D, F);
             
             Matrix e = F * D * S - S * D * F;
             d.add(F, e);
@@ -147,7 +149,6 @@ double HfSolver::compute(){
 
         rms = Helper::calc_rms(D, new_D);
         D = new_D;
-        E_curr = calc_hf_energy();
         delta_E = E_curr - E_prev;
 
         count++;
