@@ -252,7 +252,7 @@ Matrix& HfSolver::updateFock(Matrix D){
         }
     }
 
-    return F;
+    return &F;
 }
 
 Matrix& HfSolver::updateDensity(Matrix F){
@@ -277,7 +277,7 @@ Matrix& HfSolver::updateDensity(Matrix F){
         }
     }
 
-    return new_D;
+    return &new_D;
 }
 
 double* HfSolver::spatial_atom(){
