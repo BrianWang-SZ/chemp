@@ -75,7 +75,7 @@ double HfSolver::compute(){
 
     double E_prev = 0.0;
 
-    double E_curr = calc_hf_energy();
+    double E_curr = calc_hf_energy(D, F);
 
     double delta_E = E_curr - E_prev;
     double rms = 1.0;
