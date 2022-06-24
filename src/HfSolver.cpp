@@ -101,8 +101,8 @@ double HfSolver::compute(){
 
         E_prev = E_curr;
 
-        Matrix e = F * D * S - S * D * F;
-        d.add(F, e);
+        // Matrix e = F * D * S - S * D * F;
+        // d.add(F, e);
         
         Matrix new_D(norb, norb);
 
@@ -121,8 +121,8 @@ double HfSolver::compute(){
         } else {
             updateFock(F, D);
 
-            // Matrix e = F * D * S - S * D * F;
-            // d.add(F, e);
+            Matrix e = F * D * S - S * D * F;
+            d.add(F, e);
 
             updateDensity(new_D, F);
             
@@ -149,6 +149,10 @@ double HfSolver::compute(){
 
         rms = Helper::calc_rms(D, new_D);
         D = new_D;
+
+        Matrix e = F * D * S - S * D * F;
+        d.add(F, e);
+
         E_curr = calc_hf_energy(D, F);
         delta_E = E_curr - E_prev;
 
