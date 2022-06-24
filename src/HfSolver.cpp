@@ -101,28 +101,28 @@ double HfSolver::compute(){
 
         E_prev = E_curr;
         
-        Matrix new_D(norb, norb);
+        Matrix new_D;
 
         /* DIIS optimization starts*/
         if(count >= 2){
             
-            updateDensity(new_D, d.extrap());
+            new_D = updateDensity(d.extrap());
             
-            updateFock(new_D);
+            F = updateFock(new_D);
 
-            Matrix e = F * D * S - S * D * F;
+            Matrix e = F * new_D * S - S * new_D * F;
 
             d.add(F, e);
 
         } else {
-            updateFock(D);
+            F = updateFock(D);
             
             if(toprint && count == 0){
                 printf("\tFock Matrix:\n\n");
                 Helper::print_matrix(F);
             }
 
-            updateDensity(new_D, F);
+            new_D = updateDensity(F);
             
             Matrix e = F * D * S - S * D * F;
             d.add(F, e);
@@ -228,7 +228,9 @@ void HfSolver::initialize(){
     }
 }
 
-void HfSolver::updateFock(Matrix D){
+Matrix HfSolver::updateFock(Matrix D){
+    Matrix F(norb, norb);
+
     for (int i = 0; i < norb; i++){
         for (int j = 0; j < norb; j++){
             
@@ -246,10 +248,14 @@ void HfSolver::updateFock(Matrix D){
             }
         }
     }
+
+    return F;
 }
 
-void HfSolver::updateDensity(Matrix &new_D, Matrix F){
+Matrix HfSolver::updateDensity(Matrix F){
     
+    Matrix new_D(norb, norb);
+
     Matrix Fp = isqrt_S.transpose() * F * isqrt_S;
 
     Eigen::SelfAdjointEigenSolver<Matrix> solver(Fp);
@@ -267,6 +273,8 @@ void HfSolver::updateDensity(Matrix &new_D, Matrix F){
             new_D(i, j) = sum;
         }
     }
+
+    return new_D;
 }
 
 double* HfSolver::spatial_atom(){
