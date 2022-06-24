@@ -232,7 +232,6 @@ void HfSolver::initialize(){
 }
 
 void HfSolver::updateFock(Matrix &F, Matrix D){
-    Matrix F(norb, norb);
 
     for (int i = 0; i < norb; i++){
         for (int j = 0; j < norb; j++){
@@ -254,8 +253,6 @@ void HfSolver::updateFock(Matrix &F, Matrix D){
 }
 
 void HfSolver::updateDensity(Matrix &new_D, Matrix F){
-    
-    Matrix new_D(norb, norb);
 
     Matrix Fp = isqrt_S.transpose() * F * isqrt_S;
 
