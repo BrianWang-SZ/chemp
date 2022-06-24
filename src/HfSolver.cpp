@@ -100,13 +100,7 @@ double HfSolver::compute(){
     while (count < MAXITER && (abs(delta_E) >= DELTA_1 || rms >= DELTA_2)){
 
         E_prev = E_curr;
-
-        // Matrix e = F * D * S - S * D * F;
-        // d.add(F, e);
-        if (count > 0){
-            Matrix e = F * D * S - S * D * F;
-            d.add(F, e);
-        }
+        
         
         Matrix new_D(norb, norb);
 
@@ -147,6 +141,11 @@ double HfSolver::compute(){
         
         // updateDensity(new_D, F);
         /****/
+
+        
+        Matrix e = F * D * S - S * D * F;
+        d.add(F, e);
+        
 
         rms = Helper::calc_rms(D, new_D);
         D = new_D;
