@@ -143,15 +143,15 @@ double HfSolver::compute(){
         /****/
 
         rms = Helper::calc_rms(D, new_D);
-        E_curr = calc_hf_energy(D, F);
-        D = new_D;
 
-        Matrix e = F * D * S - S * D * F;
-        d.add(F, e);
-
-        //E_curr = calc_hf_energy(D, F);
+        E_curr = calc_hf_energy(new_D, F);
         delta_E = E_curr - E_prev;
 
+        Matrix e = F * new_D * S - S * new_D * F;
+        d.add(F, e);
+
+        D = new_D;
+        
         count++;
         if(toprint){
             printf("%02d%21.12f%21.12f%21.12f%21.12f\n", count, E_curr, 
