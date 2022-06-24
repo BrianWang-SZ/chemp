@@ -12,7 +12,7 @@ DIIS::DIIS(){
 }
 
 void DIIS::add(Matrix &mat, Matrix &e){
-    Helper::print_matrix(e);
+    e.resize(e.rows() * e.cols(), 1);
     if (count >= MAXERR) {
         shift();
         err[MAXERR - 1] = e;
@@ -54,7 +54,7 @@ void DIIS::build_B(Matrix &B) const{
 
     for (int i = 0; i < B.rows() - 1; i++){
         for (int j = 0; j <= i; j++){
-            B(i, j) = (err[i].transpose() * err[j]).trace();
+            B(i, j) = (err[i].transpose() * err[j])(0, 0);
             B(j, i) = B(i, j);  //symmetry
         }
     }
