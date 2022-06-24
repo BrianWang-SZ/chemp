@@ -100,13 +100,15 @@ double HfSolver::compute(){
     while (count < MAXITER && (abs(delta_E) >= DELTA_1 || rms >= DELTA_2)){
 
         E_prev = E_curr;
+
+        Matrix e = F * D * S - S * D * F;
+        d.add(F, e);
         
         Matrix new_D(norb, norb);
 
         /* DIIS optimization starts*/
         if(count >= 2){
-            Matrix e = F * D * S - S * D * F;
-            d.add(F, e);
+            
 
             Matrix Fext(norb, norb);
             d.extrap(Fext);
@@ -119,8 +121,8 @@ double HfSolver::compute(){
         } else {
             updateFock(F, D);
 
-            Matrix e = F * D * S - S * D * F;
-            d.add(F, e);
+            // Matrix e = F * D * S - S * D * F;
+            // d.add(F, e);
 
             updateDensity(new_D, F);
             
