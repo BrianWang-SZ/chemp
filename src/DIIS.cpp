@@ -39,7 +39,7 @@ void DIIS::extrap(Matrix &ext) const{
         b[i] = 0;
     }
     b[B.cols() - 1] = -1;
-    Eigen::VectorXd c = B.colPivHouseholderQR().solve(b);
+    Eigen::VectorXd c = B.colPivHouseholderQr().solve(b);
     std::cout << c << std::endl;
 
     for (int i = 0; i < c.size() - 1; i++){
