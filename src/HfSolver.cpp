@@ -101,14 +101,14 @@ double HfSolver::compute(){
 
         E_prev = E_curr;
         
-        Matrix new_D;
+        Matrix new_D(norb, norb);
 
         /* DIIS optimization starts*/
         if(count >= 2){
             
-            D = updateDensity(d.extrap());
+            updateDensity(D, d.extrap());
             
-            F = updateFock(new_D);
+            updateFock(F, new_D);
 
             Matrix e = F * new_D * S - S * new_D * F;
 
@@ -117,14 +117,14 @@ double HfSolver::compute(){
             d.add(F, e);
 
         } else {
-            F = updateFock(D);
+            updateFock(F, D);
             
             if(toprint && count == 0){
                 printf("\tFock Matrix:\n\n");
                 Helper::print_matrix(F);
             }
 
-            new_D = updateDensity(F);
+            updateDensity(new_D, F);
 
             E_curr = calc_hf_energy(new_D, F);
             
@@ -231,7 +231,7 @@ void HfSolver::initialize(){
     }
 }
 
-Matrix& HfSolver::updateFock(Matrix D){
+void HfSolver::updateFock(Matrix &F, Matrix D){
     Matrix F(norb, norb);
 
     for (int i = 0; i < norb; i++){
@@ -251,11 +251,9 @@ Matrix& HfSolver::updateFock(Matrix D){
             }
         }
     }
-
-    return &F;
 }
 
-Matrix& HfSolver::updateDensity(Matrix F){
+void HfSolver::updateDensity(Matrix &new_D, Matrix F){
     
     Matrix new_D(norb, norb);
 
@@ -276,8 +274,6 @@ Matrix& HfSolver::updateDensity(Matrix F){
             new_D(i, j) = sum;
         }
     }
-
-    return &new_D;
 }
 
 double* HfSolver::spatial_atom(){
