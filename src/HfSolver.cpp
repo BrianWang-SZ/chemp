@@ -103,15 +103,10 @@ double HfSolver::compute(){
         
         Matrix new_D(norb, norb);
 
-        
-        
-
         /* DIIS optimization starts*/
         if(count >= 2){
             
-            F = d.extrap();
-            
-            updateDensity(new_D);
+            updateDensity(new_D, d.extrap());
             
             updateFock(new_D);
 
@@ -120,15 +115,14 @@ double HfSolver::compute(){
             d.add(F, e);
 
         } else {
-            updateDensity(new_D);
-            updateFock(new_D);
+            updateFock(D);
             
             if(toprint && count == 0){
                 printf("\tFock Matrix:\n\n");
                 Helper::print_matrix(F);
             }
 
-            
+            updateDensity(new_D, F);
             
             Matrix e = F * new_D * S - S * new_D * F;
             d.add(F, e);
@@ -254,7 +248,7 @@ void HfSolver::updateFock(Matrix D){
     }
 }
 
-void HfSolver::updateDensity(Matrix &new_D){
+void HfSolver::updateDensity(Matrix &new_D, Matrix F){
     
     Matrix Fp = isqrt_S.transpose() * F * isqrt_S;
 
