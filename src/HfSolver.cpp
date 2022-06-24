@@ -231,7 +231,7 @@ void HfSolver::initialize(){
     }
 }
 
-Matrix HfSolver::updateFock(Matrix D){
+Matrix& HfSolver::updateFock(Matrix D){
     Matrix F(norb, norb);
 
     for (int i = 0; i < norb; i++){
@@ -255,7 +255,7 @@ Matrix HfSolver::updateFock(Matrix D){
     return F;
 }
 
-Matrix HfSolver::updateDensity(Matrix F){
+Matrix& HfSolver::updateDensity(Matrix F){
     
     Matrix new_D(norb, norb);
 
