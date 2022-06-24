@@ -119,31 +119,24 @@ double HfSolver::compute(){
 
             d.add(F, e);
 
-            // updateFock();
-
-            // Matrix e = F * D * S - S * D * F;
-
-            // updateDensity(new_D);
-
-            // d.add(, e);
         } else {
-            updateFock(D);
+            updateDensity(new_D);
+            updateFock(new_D);
             
             if(toprint && count == 0){
                 printf("\tFock Matrix:\n\n");
                 Helper::print_matrix(F);
             }
 
-            updateDensity(new_D);
+            
             
             Matrix e = F * new_D * S - S * new_D * F;
             d.add(F, e);
-            
         }
         /* DIIS optimization ends*/
 
         /****/
-        // updateFock();
+        // updateFock(D);
 
         // Matrix e = F * D * S - S * D * F;
         // Helper::print_matrix(e);
