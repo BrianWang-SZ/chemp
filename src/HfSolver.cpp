@@ -69,7 +69,7 @@ double HfSolver::calc_hf_energy(Matrix D, Matrix F) const{
 }
 
 double HfSolver::compute(){
-    if (computed && !toprint) return calc_hf_energy();
+    if (computed && !toprint) return calc_hf_energy(D, F);
     
     initialize();
 
