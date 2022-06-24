@@ -52,7 +52,7 @@ void DIIS::extrap(Matrix &ext) const{
 
 void DIIS::build_B(Matrix &B) const{
 
-    for (int i = 0; i < B.row() - 1; i++){
+    for (int i = 0; i < B.rows() - 1; i++){
         for (int j = 0; j <= i; j++){
             B(i, j) = (err[i].transpose() * err[j]).trace();
             B(j, i) = B(i, j);  //symmetry
