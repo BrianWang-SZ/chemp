@@ -4,7 +4,7 @@
 #include "EnergySolver.hpp"
 #include "DIIS.hpp"
 
-#define MAXITER 15
+#define MAXITER 100
 #define DELTA_1 1e-12
 #define DELTA_2 1e-11
 
@@ -111,8 +111,11 @@ double HfSolver::compute(){
             
             
             updateDensity(new_D);
-            Matrix e = F * new_D * S - S * new_D * F;
+            
             updateFock();
+
+            Matrix e = F * new_D * S - S * new_D * F;
+
             d.add(F, e);
             
             
