@@ -14,7 +14,7 @@ private:
     int count;
     Matrix *err;
     Matrix *mats;
-    Matrix build_B() const;
+    void build_B(Matrix &B) const;
     void shift();
     
 };

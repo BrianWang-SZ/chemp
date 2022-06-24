@@ -33,7 +33,10 @@ void DIIS::shift(){
 }
 
 void DIIS::extrap(Matrix &ext) const{
-    Matrix B = build_B();
+    int size = (count > MAXERR) ? MAXERR : count;
+
+    Matrix B(size + 1, size + 1);
+    build_B(B);
     Eigen::VectorXd b(B.cols());
     for (int i = 0; i < B.cols(); i++){
         b[i] = 0;
@@ -47,21 +50,19 @@ void DIIS::extrap(Matrix &ext) const{
     }
 }
 
-Matrix DIIS::build_B() const{
-    int size = (count > MAXERR) ? MAXERR : count;
-    Matrix B(size + 1, size + 1);
-    for (int i = 0; i < size; i++){
+void DIIS::build_B(Matrix &B) const{
+
+    for (int i = 0; i < B.row() - 1; i++){
         for (int j = 0; j <= i; j++){
-            B(i, j) = (err[i] * err[j].transpose()).trace();
+            B(i, j) = (err[i].transpose() * err[j]).trace();
             B(j, i) = B(i, j);  //symmetry
         }
     }
 
-    for (int i = 0; i < size; i++){
-        B(size, i) = -1;
-        B(i, size) = -1;
+    for (int i = 0; i < B.row() - 1; i++){
+        B(B.rows() - 1, i) = -1;
+        B(i, B.cols() - 1) = -1;
     }
-    B(size, size) = 0.0;
 
-    return B;
+    B(B.rows() - 1, B.cols() - 1) = 0.0;
 }
