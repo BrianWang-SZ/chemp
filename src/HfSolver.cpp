@@ -121,9 +121,6 @@ double HfSolver::compute(){
         } else {
             updateFock(F, D);
 
-            Matrix e = F * D * S - S * D * F;
-            d.add(F, e);
-
             updateDensity(new_D, F);
             
             if(toprint && count == 0){
