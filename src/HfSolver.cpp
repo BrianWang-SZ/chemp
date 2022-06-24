@@ -145,10 +145,13 @@ double HfSolver::compute(){
         /****/
 
         rms = Helper::calc_rms(D, new_D);
-        D = new_D;
 
         Matrix e = F * D * S - S * D * F;
         d.add(F, e);
+        
+        D = new_D;
+
+        
 
         E_curr = calc_hf_energy(D, F);
         delta_E = E_curr - E_prev;
