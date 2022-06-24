@@ -112,7 +112,7 @@ double HfSolver::compute(){
             
             updateFock(F, new_D);
 
-            Matrix e = F * new_D * S - S * D * F;
+            Matrix e = F * new_D * S - S * new_D * F;
 
             d.add(F, e);
 
