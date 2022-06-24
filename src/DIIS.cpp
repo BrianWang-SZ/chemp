@@ -12,6 +12,7 @@ DIIS::DIIS(){
 }
 
 void DIIS::add(Matrix &mat, Matrix &e){
+    Helper::print_matrx(e);
     e.resize(e.rows() * e.cols(), 1);
     if (count >= MAXERR) {
         shift();
