@@ -112,13 +112,13 @@ double HfSolver::compute(){
             
             updateFock(F, new_D);
 
-            Matrix e = F * new_D * S - S * new_D * F;
+            Matrix e = isqrt_S.transpose() * (F * new_D * S - S * new_D * F) * isqrt_S;
             d.add(F, e);
 
         } else {
             updateFock(F, D);
 
-            Matrix e = F * D * S - S * D * F;
+            Matrix e = isqrt_S.transpose() * (F * D * S - S * D * F) * isqrt_S;
             d.add(F, e);
 
             updateDensity(new_D, F);
