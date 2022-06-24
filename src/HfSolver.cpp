@@ -113,16 +113,15 @@ double HfSolver::compute(){
             updateFock(F, new_D);
 
             Matrix e = F * new_D * S - S * new_D * F;
-
             d.add(F, e);
 
         } else {
             updateFock(F, D);
 
-            updateDensity(new_D, F);
-
-            Matrix e = F * new_D * S - S * new_D * F;
+            Matrix e = F * D * S - S * D * F;
             d.add(F, e);
+
+            updateDensity(new_D, F);
             
             if(toprint && count == 0){
                 printf("\tFock Matrix:\n\n");
