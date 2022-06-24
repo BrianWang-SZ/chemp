@@ -52,7 +52,7 @@ Matrix DIIS::build_B() const{
     Matrix B(size + 1, size + 1);
     for (int i = 0; i < size; i++){
         for (int j = 0; j <= i; j++){
-            B(i, j) = (err[i].transpose() * err[j]).trace();
+            B(i, j) = (err[i] * err[j].transpose()).trace();
             B(j, i) = B(i, j);  //symmetry
         }
     }
