@@ -25,7 +25,7 @@ private:
     double calc_hf_energy() const;
     void initialize();
     void updateFock(Matrix D);
-    void updateDensity(Matrix &new_D);
+    void updateDensity(Matrix &new_D, Matrix F);
     void compute_dipole() const;
 };
 
