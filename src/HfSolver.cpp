@@ -51,7 +51,7 @@ void HfSolver::compute_dipole() const{
         dz += atoms[i].zval * atoms[i].z;
     }
     printf("Mux = %20.12f\nMuy = %20.12f\nMuz = %20.12f\n", dx, dy, dz);
-    printf("Total dipole moment (au) = %20.12f\n", dx + dy + dz);
+    printf("Total dipole moment (au) = %20.12f\n", sqrt(pow(dx, 2) + pow(dy, 2) + pow(dz, 2)));
 
     Helper::free2d(mux, norb);
     Helper::free2d(muy, norb);
