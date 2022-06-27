@@ -105,44 +105,41 @@ double HfSolver::compute(){
         Matrix new_D(norb, norb);
 
         /* DIIS optimization starts*/
-        // if(count >= 2){
+        if(count >= 2){
             
 
-        //     Matrix Fext(norb, norb);
-        //     d.extrap(Fext);
+            Matrix Fext(norb, norb);
+            d.extrap(Fext);
 
-        //     updateDensity(new_D, Fext);
+            updateDensity(new_D, Fext);
             
-        //     updateFock(F, new_D);
+            updateFock(F, new_D);
             
 
-        // } else {
-        //     updateFock(F, D);
+        } else {
+            updateFock(F, D);
 
-        //     Matrix e = F * D * S - S * D * F;
-        //     d.add(F, e);
-
-        //     updateDensity(new_D, F);
+            updateDensity(new_D, F);
             
-        //     if(toprint && count == 0){
-        //         printf("\tFock Matrix:\n\n");
-        //         Helper::print_matrix(F);
-        //     }
-        // }
+            if(toprint && count == 0){
+                printf("\tFock Matrix:\n\n");
+                Helper::print_matrix(F);
+            }
+        }
         /* DIIS optimization ends*/
 
         /****/
-        updateFock(F, D);
+        // updateFock(F, D);
 
-        Matrix e = F * D * S - S * D * F;
-        Helper::print_matrix(e);
+        // Matrix e = F * D * S - S * D * F;
+        // Helper::print_matrix(e);
             
-        if(toprint && count == 0){
-            printf("\tFock Matrix:\n\n");
-            Helper::print_matrix(F);
-        }
+        // if(toprint && count == 0){
+        //     printf("\tFock Matrix:\n\n");
+        //     Helper::print_matrix(F);
+        // }
         
-        updateDensity(new_D, F);
+        // updateDensity(new_D, F);
         /****/
 
         rms = Helper::calc_rms(D, new_D);
