@@ -147,10 +147,10 @@ double HfSolver::compute(){
         E_curr = calc_hf_energy(new_D, F);
         delta_E = E_curr - E_prev;
 
-        if (count >= 2){
+        //if (count >= 2){
             Matrix e = F * new_D * S - S * new_D * F;
             d.add(F, e);
-        }
+        //}
         
 
         D = new_D;
