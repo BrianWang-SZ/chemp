@@ -139,7 +139,7 @@ double HfSolver::compute(){
             Helper::print_matrix(F);
         }
         
-        // updateDensity(new_D, F);
+        updateDensity(new_D, F);
         /****/
 
         rms = Helper::calc_rms(D, new_D);
