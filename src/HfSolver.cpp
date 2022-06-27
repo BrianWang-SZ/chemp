@@ -148,8 +148,8 @@ double HfSolver::compute(){
         delta_E = E_curr - E_prev;
 
         //if (count >= 2){
-            Matrix e = F * new_D * S - S * new_D * F;
-            d.add(F, e);
+            //Matrix e = F * new_D * S - S * new_D * F;
+            //d.add(F, e);
         //}
         
 
