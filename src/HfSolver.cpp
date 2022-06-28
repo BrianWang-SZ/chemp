@@ -152,7 +152,7 @@ double HfSolver::compute(){
         delta_E = E_curr - E_prev;
 
         //if (count >= 2){
-            Matrix e = isqrt_S.transpose() * (F * new_D * S - S * new_D * F) * isqrt_S;
+            Matrix e = F * D * S - S * D * F;
             d.add(F, e);
         //}
         
