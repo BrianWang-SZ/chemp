@@ -4,7 +4,7 @@
 #include "EnergySolver.hpp"
 #include "DIIS.hpp"
 
-#define MAXITER 50
+#define MAXITER 10
 #define DELTA_1 1e-12
 #define DELTA_2 1e-11
 
@@ -108,6 +108,8 @@ double HfSolver::compute(){
             
             Matrix Fext(norb, norb);
             d.extrap(Fext);
+            Helper::print_matrix(F);
+            Helper::print_matrix(Fext);
 
             updateDensity(new_D, Fext);
             
