@@ -104,7 +104,7 @@ double HfSolver::compute(){
         E_prev = E_curr;
 
         /* DIIS optimization starts*/
-        if(count >= 3){
+        if(count >= 2){
             
             Matrix Fext(norb, norb);
             d.extrap(Fext);
