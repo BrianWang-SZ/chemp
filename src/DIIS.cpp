@@ -67,5 +67,5 @@ void DIIS::build_B(Matrix &B) const{
     }
 
     B(B.rows() - 1, B.cols() - 1) = 0.0;
-    Helper::print_matrix(B);
+    // Helper::print_matrix(B);
 }
