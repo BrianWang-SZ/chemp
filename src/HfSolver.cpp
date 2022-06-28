@@ -102,9 +102,6 @@ double HfSolver::compute(){
     while (count < MAXITER && (abs(delta_E) >= DELTA_1 || rms >= DELTA_2)){
 
         E_prev = E_curr;
-        
-        
-        
 
         /* DIIS optimization starts*/
         if(count >= 2){
@@ -143,6 +140,11 @@ double HfSolver::compute(){
         /****/
 
         rms = Helper::calc_rms(D, new_D);
+
+        if (count == 2){
+            Helper::print_matrix(D);
+            Helper::print_matrix(new_D);
+        }
 
         E_curr = calc_hf_energy(new_D, F);
         delta_E = E_curr - E_prev;
