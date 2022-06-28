@@ -111,6 +111,8 @@ double HfSolver::compute(){
             Matrix Fext(norb, norb);
             d.extrap(Fext);
 
+            D = new_D;
+
             updateDensity(new_D, Fext);
             
             updateFock(F, new_D);
