@@ -35,6 +35,23 @@ namespace Helper{
         }
         printf("\n");
     }
+    
+    void print_verbose(Matrix mat){
+        for (int i = 0; i < mat.cols(); i++){
+            printf("%21d", i + 1);
+        }
+        
+        printf("\n\n");
+        
+        for (int i = 0; i < mat.rows(); i++){
+            printf("%12d", i + 1);
+            for (int j = 0; j < mat.cols(); j++){
+                printf("%21.12e", mat(i, j));
+            }
+            printf("\n");
+        }
+        printf("\n");
+    }
 
     double** create2d(int size){
         double **vec = new double*[size];
@@ -49,7 +66,7 @@ namespace Helper{
     }
 
     double calc_rms(Matrix mat, Matrix newmat){
-        if (mat.rows() != newmat.rows() || mat.cols() != newmat.cols()) return 0.0;
+        if (mat.rows() != newmat.rows() || mat.cols() != newmat.cols()) exit(-1);
         
         double sum = 0.0;
         for (int i = 0; i < mat.rows(); i++){

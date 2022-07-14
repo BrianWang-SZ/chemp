@@ -6,17 +6,19 @@
 class DIIS{
 
 public:
+    int dim;
+    
     DIIS();
-    void add(Matrix &mat, Matrix &e);
+    void add(const Matrix &mat, const Matrix &e);
     void extrap(Matrix &ext) const;
-
+    double calc_rms(Matrix &e) const;
+    
 private:
     int count;
-    Matrix *err;
-    Matrix *mats;
+    std::vector<Matrix> err;
+    std::vector<Matrix> mats;
     void build_B(Matrix &B) const;
     void shift();
-    
 };
 
 #endif /* DIIS_H */

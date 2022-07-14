@@ -426,10 +426,17 @@ void CCSolver::updateT(double **Fae, double **Fmi, double **Fme,
                     // Term 6 
                     for (int m = 0; m < noso; m++){
                         for (int e = noso; e < nso; e++){
-                            tmp4d[i][j][a][b] += t_ijab[i][m][a][e] * Wmbej[m][b][e][j] - t_ia[i][e] * t_ia[m][a] * mospin[m][b][e][j];
-                            tmp4d[i][j][a][b] -= t_ijab[j][m][a][e] * Wmbej[m][b][e][i] - t_ia[j][e] * t_ia[m][a] * mospin[m][b][e][i];
-                            tmp4d[i][j][a][b] -= t_ijab[i][m][b][e] * Wmbej[m][a][e][j] - t_ia[i][e] * t_ia[m][b] * mospin[m][a][e][j];
-                            tmp4d[i][j][a][b] += t_ijab[j][m][b][e] * Wmbej[m][a][e][i] - t_ia[j][e] * t_ia[m][b] * mospin[m][a][e][i];
+                            tmp4d[i][j][a][b] += t_ijab[i][m][a][e] * Wmbej[m][b][e][j] -
+                                                 t_ia[i][e] * t_ia[m][a] * mospin[m][b][e][j];
+                            
+                            tmp4d[i][j][a][b] -= t_ijab[j][m][a][e] * Wmbej[m][b][e][i] -
+                                                 t_ia[j][e] * t_ia[m][a] * mospin[m][b][e][i];
+                            
+                            tmp4d[i][j][a][b] -= t_ijab[i][m][b][e] * Wmbej[m][a][e][j] -
+                                                 t_ia[i][e] * t_ia[m][b] * mospin[m][a][e][j];
+                            
+                            tmp4d[i][j][a][b] += t_ijab[j][m][b][e] * Wmbej[m][a][e][i] -
+                                                 t_ia[j][e] * t_ia[m][b] * mospin[m][a][e][i];
                         }
                     }
                     

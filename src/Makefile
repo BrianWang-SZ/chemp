@@ -1,4 +1,4 @@
-chemp: main.o Molecule.o GeomSolver.o VibSolver.o HfSolver.o CCSolver.o EnergySolver.o Mp2Solver.o DIIS.o Helper.o
+chemp: Molecule.o GeomSolver.o VibSolver.o HfSolver.o CCSolver.o EnergySolver.o main.o Mp2Solver.o DIIS.o Helper.o
 	g++ main.o Molecule.o GeomSolver.o VibSolver.o HfSolver.o CCSolver.o EnergySolver.o Mp2Solver.o DIIS.o Helper.o -o chemp
 
 Molecule.o: Molecule.cpp

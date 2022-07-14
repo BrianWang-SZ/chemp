@@ -4,11 +4,12 @@
 #include "EnergySolver.hpp"
 #include "DIIS.hpp"
 
-#define MAXITER 50
+#define MAXITER 100
 #define DELTA_1 1e-12
 #define DELTA_2 1e-11
 
- #define INDEX(i,j) ((i>j) ? (((i)*((i)+1)/2)+(j)) : (((j)*((j)+1)/2)+(i)))
+
+#define INDEX(i,j) ((i>j) ? (((i)*((i)+1)/2)+(j)) : (((j)*((j)+1)/2)+(i)))
 
 HfSolver::HfSolver(Molecule &m, bool toprint):
     EnergySolver(m, false), C(norb, norb), D(norb, norb),
@@ -58,7 +59,7 @@ void HfSolver::compute_dipole() const{
     Helper::free2d(muz, norb);
 }
 
-double HfSolver::calc_hf_energy(Matrix D, Matrix F) const{
+double HfSolver::calc_hf_energy(Matrix &D, Matrix &F) const{
     double E = 0.0;
     for (int i = 0; i < norb; i++){
         for (int j = 0; j < norb; j++){
@@ -96,73 +97,63 @@ double HfSolver::compute(){
             S(i, j) = s[i][j];
         }
     }
-
-    Matrix new_D(norb, norb);
-
+    
     while (count < MAXITER && (abs(delta_E) >= DELTA_1 || rms >= DELTA_2)){
-
-        E_prev = E_curr;
-
-        /* DIIS optimization starts*/
-        if(count >= 2){
-            
-            Matrix Fext(norb, norb);
-            d.extrap(Fext);
-            Helper::print_matrix(F);
-            Helper::print_matrix(Fext);
-
-            updateDensity(new_D, Fext);
-            
-            updateFock(F, new_D);
-            
-        } else {
-            updateFock(F, D);
-
-            updateDensity(new_D, F);
-            
-            if(toprint && count == 0){
-                printf("\tFock Matrix:\n\n");
-                Helper::print_matrix(F);
-            }
-        }
+        
+//        count++;
+//        E_prev = E_curr;
+//
+//        updateFock(F, D);
+//
+//        if(toprint && count == 1){
+//            printf("\tFock Matrix:\n\n");
+//            Helper::print_matrix(F);
+//        }
+//
+//        Matrix e = F * D * S - S * D * F;
+//        d.add(F, e);
+//
+//        d.extrap(F);
+//
+//        Matrix old_D = D;
+//
+//        updateDensity(D, F);
+//        rms = Helper::calc_rms(old_D, D);
+//
+//        E_curr = calc_hf_energy(D, F);
+//        delta_E = E_curr - E_prev;
+//
+//        if(toprint){
+//            printf("%02d%21.12f%21.12f%21.12f%21.12f\n", count, E_curr,
+//                   E_curr + enuc, delta_E, rms);
+//        }
+        
         /* DIIS optimization ends*/
 
-        /****/
-        // updateFock(F, D);
-
-        // Matrix e = F * D * S - S * D * F;
-        // Helper::print_matrix(e);
-
-        // if(toprint && count == 0){
-        //     printf("\tFock Matrix:\n\n");
-        //     Helper::print_matrix(F);
-        // }
-        
-        // updateDensity(new_D, F);
-        /****/
-
-        rms = Helper::calc_rms(D, new_D);
-
-        if (count == 2){
-            Helper::print_matrix(D);
-            Helper::print_matrix(new_D);
-        }
-
-        E_curr = calc_hf_energy(new_D, F);
-        delta_E = E_curr - E_prev;
-
-        //if (count >= 2){
-            Matrix e = F * D * S - S * D * F;
-            d.add(F, e);
-        //}
-        
-        D = new_D;
-        
+/* Regular SCF procedure starts*/
         count++;
-        if(toprint){
-            printf("%02d%21.12f%21.12f%21.12f%21.12f\n", count, E_curr, 
-                                                     E_curr + enuc, delta_E, rms); 
+        E_prev = E_curr;
+        updateFock(F, D);
+
+        if(toprint && count == 1){
+         printf("\tFock Matrix:\n\n");
+         Helper::print_matrix(F);
         }
+        
+        Matrix old_D = D;
+
+        updateDensity(D, F);
+
+        rms = Helper::calc_rms(old_D, D);
+        
+        E_curr = calc_hf_energy(D, F);
+        delta_E = E_curr - E_prev;
+        
+        if(toprint){
+            printf("%02d%21.12f%21.12f%21.12f%21.12f\n", count, E_curr,
+                   E_curr + enuc, delta_E, rms);
+        }
+/* Regular SCF procedure ends */
     }
 
     if (toprint){
@@ -191,7 +182,7 @@ void HfSolver::initialize(){
     solver.compute(S);
     Matrix evecs_S = solver.eigenvectors();
     Matrix evals_S = solver.eigenvalues();
-
+    
     Matrix A = evals_S.asDiagonal();
 
     Matrix isqrt_A = A.inverse().cwiseSqrt();
@@ -238,7 +229,8 @@ void HfSolver::initialize(){
     }
 }
 
-void HfSolver::updateFock(Matrix &F, Matrix D){
+void HfSolver::updateFock(Matrix &F, const Matrix &D){
+    F.setZero();
 
     for (int i = 0; i < norb; i++){
         for (int j = 0; j < norb; j++){
@@ -259,7 +251,9 @@ void HfSolver::updateFock(Matrix &F, Matrix D){
     }
 }
 
-void HfSolver::updateDensity(Matrix &new_D, Matrix F){
+void HfSolver::updateDensity(Matrix &new_D, const Matrix &F){
+    
+    new_D.setZero();
 
     Matrix Fp = isqrt_S.transpose() * F * isqrt_S;
 

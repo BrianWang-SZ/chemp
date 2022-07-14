@@ -22,10 +22,10 @@ protected:
 private:
     bool computed;
 
-    double calc_hf_energy(Matrix D, Matrix F) const;
+    double calc_hf_energy(Matrix &D, Matrix &F) const;
     void initialize();
-    void updateFock(Matrix &F, Matrix D);
-    void updateDensity(Matrix &new_D, Matrix F);
+    void updateFock(Matrix &F, const Matrix &D);
+    void updateDensity(Matrix &new_D, const Matrix &F);
     void compute_dipole() const;
 };
 

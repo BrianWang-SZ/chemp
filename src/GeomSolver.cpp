@@ -209,7 +209,7 @@ void GeomSolver::oop_angle(){
                         oop_helper(i, j, k, l);
                         oop_helper(j, i, k, l);
                         oop_helper(l, i, k, j);                                            
-                    }  
+                    }
                 }
             }
         }
