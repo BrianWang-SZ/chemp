@@ -1,10 +1,10 @@
-#include "HfSolver.hpp"
+#include "HFSolver.hpp"
 #include "Mp2Solver.hpp"
 
  #define INDEX(i,j) ((i>j) ? (((i)*((i)+1)/2)+(j)) : (((j)*((j)+1)/2)+(i)))
 
 Mp2Solver::Mp2Solver(Molecule &m):
-    HfSolver(m, false){
+    HFSolver(m, false){
     moeri = spatial_atom();
 }
 
@@ -36,7 +36,7 @@ double Mp2Solver::compute(){
         }
     }
 
-    double E_scf = HfSolver::compute();
+    double E_scf = HFSolver::compute();
     printf("Escf = %20.12f\n"
             "Emp2 = %20.12f\n"
             "Etot = %20.12f\n", E_scf + enuc, E_mp2, E_scf + enuc + E_mp2);

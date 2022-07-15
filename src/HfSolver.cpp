@@ -1,4 +1,4 @@
-#include "HfSolver.hpp"
+#include "HFSolver.hpp"
 #include "Molecule.hpp"
 #include "Helper.hpp"
 #include "EnergySolver.hpp"
@@ -11,7 +11,7 @@
 
 #define INDEX(i,j) ((i>j) ? (((i)*((i)+1)/2)+(j)) : (((j)*((j)+1)/2)+(i)))
 
-HfSolver::HfSolver(Molecule &m, bool toprint):
+HFSolver::HFSolver(Molecule &m, bool toprint):
     EnergySolver(m, false), C(norb, norb), D(norb, norb),
     F(norb, norb), isqrt_S(norb, norb){
     this -> toprint = toprint;
@@ -19,13 +19,13 @@ HfSolver::HfSolver(Molecule &m, bool toprint):
     if (!toprint) compute();
 }
 
-Matrix HfSolver::get_eval(){
+Matrix HFSolver::get_eval(){
     Matrix Fp = isqrt_S.transpose() * F * isqrt_S;
     Eigen::SelfAdjointEigenSolver<Matrix> solver(Fp);
     return solver.eigenvalues();
 }
 
-void HfSolver::compute_dipole() const{
+void HFSolver::compute_dipole() const{
     double **mux, **muy, **muz;
     
     std::string path = dir + "/mux.dat";
@@ -59,7 +59,7 @@ void HfSolver::compute_dipole() const{
     Helper::free2d(muz, norb);
 }
 
-double HfSolver::calc_hf_energy(Matrix &D, Matrix &F) const{
+double HFSolver::calc_hf_energy(Matrix &D, Matrix &F) const{
     double E = 0.0;
     for (int i = 0; i < norb; i++){
         for (int j = 0; j < norb; j++){
@@ -69,7 +69,7 @@ double HfSolver::calc_hf_energy(Matrix &D, Matrix &F) const{
     return E;
 }
 
-double HfSolver::compute(){
+double HFSolver::compute(){
     if (computed && !toprint) return calc_hf_energy(D, F);
     
     initialize();
@@ -167,7 +167,7 @@ double HfSolver::compute(){
     return E_curr;
 }
 
-void HfSolver::initialize(){
+void HFSolver::initialize(){
 
     // initialize S matrix
     Matrix S(norb, norb);
@@ -230,7 +230,7 @@ void HfSolver::initialize(){
     }
 }
 
-void HfSolver::updateFock(Matrix &F, const Matrix &D){
+void HFSolver::updateFock(Matrix &F, const Matrix &D){
     F.setZero();
 
     for (int i = 0; i < norb; i++){
@@ -252,7 +252,7 @@ void HfSolver::updateFock(Matrix &F, const Matrix &D){
     }
 }
 
-void HfSolver::updateDensity(Matrix &new_D, const Matrix &F){
+void HFSolver::updateDensity(Matrix &new_D, const Matrix &F){
     
     new_D.setZero();
 
@@ -275,7 +275,7 @@ void HfSolver::updateDensity(Matrix &new_D, const Matrix &F){
     }
 }
 
-double* HfSolver::spatial_atom(){
+double* HFSolver::spatial_atom(){
     
     int max = INDEX(norb, norb);
     double *moeri = new double[INDEX(max, max) + 1];
@@ -360,7 +360,7 @@ double* HfSolver::spatial_atom(){
     return moeri;
 }
 
-double**** HfSolver::spatial_to_spin(double *moeri){
+double**** HFSolver::spatial_to_spin(double *moeri){
 
     double ****mospin = Helper::create4d(nso);
 

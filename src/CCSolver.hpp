@@ -2,9 +2,9 @@
 #define CCSOLVER_H
 
 #include "Molecule.hpp"
-#include "HfSolver.hpp" 
+#include "HFSolver.hpp" 
 
-class CCSolver : public HfSolver{
+class CCSolver : public HFSolver{
 public:
 
     CCSolver(Molecule &m);

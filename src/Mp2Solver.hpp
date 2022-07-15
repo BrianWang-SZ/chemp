@@ -1,7 +1,7 @@
 #ifndef MP2SOLVER_H
 #define MP2SOLVER_H
 
-class Mp2Solver : public HfSolver{
+class Mp2Solver : public HFSolver{
 public:
 
     Mp2Solver(Molecule &m);

@@ -1,7 +1,7 @@
 #include "CCSolver.hpp"
 #include "type.h"
 #include "Helper.hpp"
-#include "HfSolver.hpp"
+#include "HFSolver.hpp"
 #include "Molecule.hpp"
 
 #define INDEX(i,j) ((i>j) ? (((i)*((i)+1)/2)+(j)) : (((j)*((j)+1)/2)+(i)))
@@ -9,7 +9,7 @@
 #define DELTA_1 1e-12
 
 CCSolver::CCSolver(Molecule &m): 
-    HfSolver(m, false){
+    HFSolver(m, false){
 
     // convert from AO spatial to MO spatial
     moeri = spatial_atom();

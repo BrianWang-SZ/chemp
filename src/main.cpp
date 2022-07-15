@@ -1,14 +1,14 @@
 #include "Molecule.hpp"
 #include "GeomSolver.hpp"
 #include "VibSolver.hpp"
-#include "HfSolver.hpp"
+#include "HFSolver.hpp"
 #include "CCSolver.hpp"
 #include "Mp2Solver.hpp"
 
 int main (int argc, char **argv){
     const char *s = "../input/h2o/STO-3G"; 
     Molecule m(s);
-    HfSolver hfs(m, true);
+    HFSolver hfs(m, true);
     hfs.compute();
     // GeomSolver gs(m);
     // gs.solve();

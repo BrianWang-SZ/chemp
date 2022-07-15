@@ -6,10 +6,10 @@
 #include "Atom.hpp"
 #include "Molecule.hpp"
 
-class HfSolver : public EnergySolver{
+class HFSolver : public EnergySolver{
 public:
     
-    HfSolver(Molecule &m, bool toprint);
+    HFSolver(Molecule &m, bool toprint);
     double compute();
 
 protected:
