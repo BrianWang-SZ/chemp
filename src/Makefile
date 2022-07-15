@@ -1,35 +1,18 @@
-chemp: Molecule.o GeomSolver.o VibSolver.o HfSolver.o CCSolver.o EnergySolver.o main.o Mp2Solver.o DIIS.o Helper.o
-	g++ main.o Molecule.o GeomSolver.o VibSolver.o HfSolver.o CCSolver.o EnergySolver.o Mp2Solver.o DIIS.o Helper.o -o chemp
+CC=g++
+CFLAGS=-g -c -Wall
+LDFLAGS=-g
+SOURCES=main.cpp HfSolver.cpp GeomSolver.cpp VibSolver.cpp Mp2Solver.cpp Molecule.cpp Helper.cpp DIIS.cpp EnergySolver.cpp CCSolver.cpp
+OBJECTS=$(SOURCES:.cpp=.o)
+EXECUTABLE=chemp
 
-Molecule.o: Molecule.cpp
-	g++ -c Molecule.cpp
+all: $(SOURCES) $(EXECUTABLE)
 
-GeomSolver.o: GeomSolver.cpp
-	g++ -c GeomSolver.cpp
+$(EXECUTABLE): $(OBJECTS)
+	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
 
-VibSolver.o: VibSolver.cpp
-	g++ -c VibSolver.cpp
+.cpp.o:
+	$(CC) $(CFLAGS) $< -o $@
 
-HfSolver.o: HfSolver.cpp
-	g++ -c HfSolver.cpp
-
-CCSolver.o: CCSolver.cpp
-	g++ -c CCSolver.cpp
-
-EnergySolver.o: EnergySolver.cpp
-	g++ -c EnergySolver.cpp
-
-Mp2Solver.o: Mp2Solver.cpp
-	g++ -c Mp2Solver.cpp
-
-Helper.o: Helper.cpp
-	g++ -c Helper.cpp
-
-DIIS.o: DIIS.cpp
-	g++ -c DIIS.cpp
-
-main.o:
-	g++ -c main.cpp
-
+.PHONY: clean
 clean:
-	rm *.o chemp
+	rm $(OBJECTS) chemp

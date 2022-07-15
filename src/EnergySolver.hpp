@@ -17,13 +17,13 @@ protected:
     bool toprint;
     
     std::string dir;
-    int natom = 0;
+    int natom;
 
-    int norb = 0, nomo = 0,
-        nso = 0, noso = 0;
+    int norb, nomo,
+        nso, noso;
 
     Atom *atoms;
-    double enuc = 0.0;
+    double enuc;
     int *ioff;
     double *eri;
     double **s, **t, **v, **ham;

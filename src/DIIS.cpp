@@ -45,7 +45,7 @@ void DIIS::extrap(Matrix &ext) const{
         }
         b[count] = -1;
         
-        Eigen::VectorXd c = B.colPivHouseholderQr().solve(b);
+        Eigen::VectorXd c = B.inverse() * b;
         
         for (int i = 0; i < count; i++){
             ext += c[i] * mats[i];

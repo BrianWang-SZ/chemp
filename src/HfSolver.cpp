@@ -99,60 +99,61 @@ double HfSolver::compute(){
     }
     
     while (count < MAXITER && (abs(delta_E) >= DELTA_1 || rms >= DELTA_2)){
+
+/* DIIS optimization starts*/        
+       count++;
+       E_prev = E_curr;
+
+       updateFock(F, D);
+
+       if(toprint && count == 1){
+           printf("\tFock Matrix:\n\n");
+           Helper::print_matrix(F);
+       }
+
+       Matrix e = F * D * S - S * D * F;
+       d.add(F, e);
+
+       d.extrap(F);
+
+       Matrix old_D = D;
+
+       updateDensity(D, F);
+       rms = Helper::calc_rms(old_D, D);
+
+       E_curr = calc_hf_energy(D, F);
+       delta_E = E_curr - E_prev;
+
+       if(toprint){
+           printf("%02d%21.12f%21.12f%21.12f%21.12f\n", count, E_curr,
+                  E_curr + enuc, delta_E, rms);
+       }
         
-//        count++;
-//        E_prev = E_curr;
-//
-//        updateFock(F, D);
-//
-//        if(toprint && count == 1){
-//            printf("\tFock Matrix:\n\n");
-//            Helper::print_matrix(F);
-//        }
-//
-//        Matrix e = F * D * S - S * D * F;
-//        d.add(F, e);
-//
-//        d.extrap(F);
-//
-//        Matrix old_D = D;
-//
-//        updateDensity(D, F);
-//        rms = Helper::calc_rms(old_D, D);
-//
-//        E_curr = calc_hf_energy(D, F);
-//        delta_E = E_curr - E_prev;
-//
-//        if(toprint){
-//            printf("%02d%21.12f%21.12f%21.12f%21.12f\n", count, E_curr,
-//                   E_curr + enuc, delta_E, rms);
-//        }
-        
-        /* DIIS optimization ends*/
+/* DIIS optimization ends*/
 
 /* Regular SCF procedure starts*/
-        count++;
-        E_prev = E_curr;
-        updateFock(F, D);
+        // count++;
+        // E_prev = E_curr;
+        // updateFock(F, D);
 
-        if(toprint && count == 1){
-         printf("\tFock Matrix:\n\n");
-         Helper::print_matrix(F);
-        }
+        // if(toprint && count == 1){
+        //  printf("\tFock Matrix:\n\n");
+        //  Helper::print_matrix(F);
+        // }
         
-        Matrix old_D = D;
+        // Matrix old_D = D;
 
-        updateDensity(D, F);
+        // updateDensity(D, F);
 
-        rms = Helper::calc_rms(old_D, D);
+        // rms = Helper::calc_rms(old_D, D);
         
-        E_curr = calc_hf_energy(D, F);
-        delta_E = E_curr - E_prev;
+        // E_curr = calc_hf_energy(D, F);
+        // delta_E = E_curr - E_prev;
         
-        if(toprint){
-            printf("%02d%21.12f%21.12f%21.12f%21.12f\n", count, E_curr,
-                   E_curr + enuc, delta_E, rms);
-        }
+        // if(toprint){
+        //     printf("%02d%21.12f%21.12f%21.12f%21.12f\n", count, E_curr,
+        //            E_curr + enuc, delta_E, rms);
+        // }
 /* Regular SCF procedure ends */
     }
 
