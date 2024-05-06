@@ -1,6 +1,6 @@
 #include "EnergySolver.hpp"
 #include "Helper.hpp"
-#include "HfSolver.hpp"
+#include "HFSolver.hpp"
 #include <fstream>
 #include <algorithm>
 

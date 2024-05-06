@@ -9,7 +9,7 @@
 #define DELTA_1 1e-12
 
 CCSolver::CCSolver(Molecule &m): 
-    HFSolver(m, false){
+    HFSolver(m,toprint=false){
 
     // convert from AO spatial to MO spatial
     moeri = spatial_atom();
@@ -458,8 +458,12 @@ void CCSolver::updateT(double **Fae, double **Fmi, double **Fme,
 
     for (int i = 0; i < noso; i++){
         for (int a = noso; a < nso; a++){
-            t_ia[i][a] = tmp2d[i][a] / D_ia[i][a];
-        }
+            if (D_ia[i][a] == 0){
+                t_ia[i][a] = 0;
+	    } else {
+		t_ia[i][a] = tmp2d[i][a] / D_ia[i][a];
+            }
+	}
     }
     Helper::free2d(tmp2d, nso);
 
@@ -467,8 +471,12 @@ void CCSolver::updateT(double **Fae, double **Fmi, double **Fme,
         for (int j = 0; j < noso; j++){
             for (int a = noso; a < nso; a++){
                 for (int b = noso; b < nso; b++){
-                    t_ijab[i][j][a][b] = tmp4d[i][j][a][b] / D_ijab[i][j][a][b];
-                }
+                    if (D_ijab[i][j][a][b] == 0){
+	                t_ijab[i][j][a][b] = 0;
+		    } else {
+		        t_ijab[i][j][a][b] = tmp4d[i][j][a][b] / D_ijab[i][j][a][b];
+                    }
+		}
             }
         }
     }

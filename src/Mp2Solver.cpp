@@ -4,7 +4,7 @@
  #define INDEX(i,j) ((i>j) ? (((i)*((i)+1)/2)+(j)) : (((j)*((j)+1)/2)+(i)))
 
 Mp2Solver::Mp2Solver(Molecule &m):
-    HFSolver(m, false){
+    HFSolver(m, toprint=false){
     moeri = spatial_atom();
 }
 

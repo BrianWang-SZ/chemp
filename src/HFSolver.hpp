@@ -9,7 +9,7 @@
 class HFSolver : public EnergySolver{
 public:
     
-    HFSolver(Molecule &m, bool toprint);
+    HFSolver(Molecule &m, bool toprint=true, bool useDIIS=true);
     double compute();
 
 protected:
@@ -20,8 +20,7 @@ protected:
     Matrix get_eval();
 
 private:
-    bool computed;
-
+    bool useDIIS;
     double calc_hf_energy(Matrix &D, Matrix &F) const;
     void initialize();
     void updateFock(Matrix &F, const Matrix &D);

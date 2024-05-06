@@ -1,7 +1,7 @@
 CC=g++
 CFLAGS=-g -c -Wall
 LDFLAGS=-g
-SOURCES=main.cpp HfSolver.cpp GeomSolver.cpp VibSolver.cpp Mp2Solver.cpp Molecule.cpp Helper.cpp DIIS.cpp EnergySolver.cpp CCSolver.cpp
+SOURCES=main.cpp HFSolver.cpp GeomSolver.cpp VibSolver.cpp Mp2Solver.cpp Molecule.cpp Helper.cpp DIIS.cpp EnergySolver.cpp CCSolver.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=chemp
 
