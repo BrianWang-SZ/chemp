@@ -37,27 +37,28 @@ After compiling `chemp`, you can use the executable in the following manner in t
 ```
 See below for the explanations for the options:
 
+
 -i
 The directory of the prepared files (default: current directory)
 
 
--m    
+-m
 The operation to perform, including vibrational analysis (vib), geometry analysis (geom), restricted Hartree-Fock (hf), second-order Møller-Plesset perturbation (mp2) and coupled-cluster singles and doubles (ccsd). **Note that CCSD has error.** (default: "hf")
 
 
--s            
+-s
 Whether to use the Direct Inversion of the Iterative Subspace (DIIS) technique for the Hartree-Fock calculation (default: false)
 
 
--n           
+-n  
 Max number of iteractions for SCF methods (default: 100)
 
 
--e            
+-e
 The decimal place for the tolerance of energy convergence (default: 12)
 
 
--d          
+-d
 The decimal place for the tolerance of density matrix convergence (default: 11)
 
 
